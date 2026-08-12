@@ -4,7 +4,9 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,6 +32,7 @@ fun MenuScreen(
     onLaserModeToggle: () -> Unit,
     onWinningScoreChange: (Int) -> Unit,
     onFastCatToggle: () -> Unit,
+    onToggleGuess: (Int) -> Unit = {},
     onStartGame: (WinMode) -> Unit
 ) {
     Box(
@@ -125,6 +128,101 @@ fun MenuScreen(
                         color = if (settings.fastCat) Color(0xFF66BB6A) else Color.Gray,
                         onClick = onFastCatToggle
                     )
+                }
+
+                HorizontalDivider(color = Color(0xFF2E2E3E))
+
+                // Predict Finish Order Section
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Psychology,
+                            contentDescription = null,
+                            tint = Color(0xFFFFB74D),
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = "Predict Finish Order (Optional)",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                    }
+
+                    Text(
+                        text = "Tap a player to set rank guess (#1, #2...). Tap again to deselect.",
+                        color = Color.Gray,
+                        fontSize = 11.sp
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState())
+                            .padding(top = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        for (playerId in 1..settings.playerCount) {
+                            val rankIndex = settings.guesses.indexOf(playerId)
+                            val isGuessed = rankIndex >= 0
+                            val rankNumber = rankIndex + 1
+
+                            val backgroundColor = if (isGuessed) {
+                                when (rankNumber) {
+                                    1 -> Color(0xFFFFD700)
+                                    2 -> Color(0xFFE0E0E0)
+                                    3 -> Color(0xFFFFB74D)
+                                    else -> Color(0xFF81D4FA)
+                                }
+                            } else {
+                                Color(0xFF282836)
+                            }
+
+                            val textColor = if (isGuessed) Color.Black else Color.White
+
+                            Surface(
+                                onClick = { onToggleGuess(playerId) },
+                                shape = RoundedCornerShape(12.dp),
+                                color = backgroundColor,
+                                border = if (isGuessed) null else androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF38384A)),
+                                modifier = Modifier.testTag("guess_player_$playerId")
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Text(
+                                        text = "Player $playerId",
+                                        color = textColor,
+                                        fontWeight = if (isGuessed) FontWeight.Bold else FontWeight.Medium,
+                                        fontSize = 13.sp
+                                    )
+                                    if (isGuessed) {
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .background(Color.Black.copy(alpha = 0.2f))
+                                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                                        ) {
+                                            Text(
+                                                text = "#$rankNumber",
+                                                color = textColor,
+                                                fontWeight = FontWeight.ExtraBold,
+                                                fontSize = 12.sp
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 HorizontalDivider(color = Color(0xFF2E2E3E))

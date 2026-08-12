@@ -22,5 +22,6 @@ data class GameSettings(
     val winningScore: Int = 10,
     val winMode: WinMode = WinMode.WIN_1,
     val laserMode: LaserMode = LaserMode.OFF,
-    val fastCat: Boolean = true
+    val fastCat: Boolean = true,
+    val guesses: List<Int> = emptyList()
 )

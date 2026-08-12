@@ -48,6 +48,7 @@ fun MouseGameApp(viewModel: GameViewModel = viewModel()) {
                 onLaserModeToggle = viewModel::toggleLaserMode,
                 onWinningScoreChange = viewModel::updateWinningScore,
                 onFastCatToggle = viewModel::toggleFastCat,
+                onToggleGuess = viewModel::toggleGuess,
                 onStartGame = viewModel::startGame
             )
         }

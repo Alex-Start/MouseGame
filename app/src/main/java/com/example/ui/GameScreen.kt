@@ -148,12 +148,11 @@ fun GameScreen(
                 color = Color(0xFFD32F2F),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "🏆 WINNER: ${uiState.winnerNames}! 🏆",
@@ -161,6 +160,19 @@ fun GameScreen(
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
+
+                    if (uiState.guesses.isNotEmpty()) {
+                        val correctGuesses = uiState.players.count { p ->
+                            p.predictedRank != null && p.winnerRank != null && p.winnerRank == p.predictedRank
+                        }
+                        Text(
+                            text = "🎯 Predictions: $correctGuesses / ${uiState.guesses.size} Correct!",
+                            color = Color(0xFFFFD700),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            modifier = Modifier.padding(top = 2.dp)
+                        )
+                    }
                 }
             }
         }
@@ -270,7 +282,7 @@ private fun PlayerRowTrack(
     ) {
         // Player Label
         Row(
-            modifier = Modifier.width(130.dp),
+            modifier = Modifier.width(135.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -291,13 +303,28 @@ private fun PlayerRowTrack(
                 )
             }
 
-            Text(
-                text = "${player.name.trim()}: ${player.score}",
-                color = if (player.isAlive) Color.White else Color.Gray,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp,
-                textDecoration = if (!player.isAlive) TextDecoration.LineThrough else TextDecoration.None
-            )
+            Column {
+                Text(
+                    text = "${player.name.trim()}: ${player.score}",
+                    color = if (player.isAlive) Color.White else Color.Gray,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    textDecoration = if (!player.isAlive) TextDecoration.LineThrough else TextDecoration.None
+                )
+
+                if (player.predictedRank != null) {
+                    val isCorrect = player.winnerRank != null && player.winnerRank == player.predictedRank
+                    val tagText = if (isCorrect) "🎯 #${player.predictedRank} ✅" else "🎯 Pred #${player.predictedRank}"
+                    val tagColor = if (isCorrect) Color(0xFF81C784) else Color(0xFFFFB74D)
+
+                    Text(
+                        text = tagText,
+                        color = tagColor,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
 
         // Track Lane

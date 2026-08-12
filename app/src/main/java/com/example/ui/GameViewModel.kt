@@ -19,7 +19,8 @@ data class PlayerUiState(
     val name: String,
     val score: Int,
     val isAlive: Boolean,
-    val winnerRank: Int?
+    val winnerRank: Int?,
+    val predictedRank: Int? = null
 )
 
 data class GameUiState(
@@ -36,6 +37,7 @@ data class GameUiState(
     val winningScore: Int = 10,
     val winnerNames: String = "",
     val isMuted: Boolean = false,
+    val guesses: List<Int> = emptyList(),
     val tick: Long = 0L
 )
 
@@ -48,14 +50,19 @@ fun GameEngine.toUiState(isMuted: Boolean = false): GameUiState {
             .joinToString(", ") { "${it.name.trim()} (#${winnerList[it.id]})" }
     } else ""
 
+    val guessList = settings.guesses
+
     return GameUiState(
         players = players.map { p ->
+            val predictedIdx = guessList.indexOf(p.id)
+            val predRank = if (predictedIdx >= 0) predictedIdx + 1 else null
             PlayerUiState(
                 id = p.id,
                 name = p.name,
                 score = p.score,
                 isAlive = p.isAlive,
-                winnerRank = winnerList[p.id]
+                winnerRank = winnerList[p.id],
+                predictedRank = predRank
             )
         },
         laserLineNumber = laserLineNumber,
@@ -70,6 +77,7 @@ fun GameEngine.toUiState(isMuted: Boolean = false): GameUiState {
         winningScore = settings.winningScore,
         winnerNames = winnerNamesStr,
         isMuted = isMuted,
+        guesses = guessList,
         tick = System.currentTimeMillis()
     )
 }
@@ -101,10 +109,23 @@ class GameViewModel : ViewModel() {
         }
     }
 
+    fun toggleGuess(playerId: Int) {
+        val current = _settings.value
+        val currentGuesses = current.guesses.toMutableList()
+        if (currentGuesses.contains(playerId)) {
+            currentGuesses.remove(playerId)
+        } else {
+            currentGuesses.add(playerId)
+        }
+        _settings.value = current.copy(guesses = currentGuesses)
+        soundManager.playButtonClick()
+    }
+
     fun updatePlayerCount(delta: Int) {
         val current = _settings.value
         val newCount = (current.playerCount + delta).coerceIn(1, 10)
-        _settings.value = current.copy(playerCount = newCount)
+        val validGuesses = current.guesses.filter { it <= newCount }
+        _settings.value = current.copy(playerCount = newCount, guesses = validGuesses)
         soundManager.playButtonClick()
     }
 
