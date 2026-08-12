@@ -1,0 +1,235 @@
+package com.example.ui
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.audio.SoundManager
+import com.example.model.GameEngine
+import com.example.model.GameSettings
+import com.example.model.LaserMode
+import com.example.model.WinMode
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+data class PlayerUiState(
+    val id: Int,
+    val name: String,
+    val score: Int,
+    val isAlive: Boolean,
+    val winnerRank: Int?
+)
+
+data class GameUiState(
+    val players: List<PlayerUiState> = emptyList(),
+    val laserLineNumber: Int = 0,
+    val laserLineTime: Int = 0,
+    val laserLineTimeMax: Int = 10,
+    val isGameOver: Boolean = false,
+    val durationFormatted: String = "00:00:00",
+    val winMode: WinMode = WinMode.WIN_1,
+    val laserMode: LaserMode = LaserMode.OFF,
+    val countWinners: Int = 0,
+    val countKilled: Int = 0,
+    val winningScore: Int = 10,
+    val winnerNames: String = "",
+    val isMuted: Boolean = false,
+    val tick: Long = 0L
+)
+
+fun GameEngine.toUiState(isMuted: Boolean = false): GameUiState {
+    val winnerList = winners.toMap()
+    val winnerNamesStr = if (countWinners() > 0) {
+        players
+            .filter { winnerList.containsKey(it.id) }
+            .sortedBy { winnerList[it.id] }
+            .joinToString(", ") { "${it.name.trim()} (#${winnerList[it.id]})" }
+    } else ""
+
+    return GameUiState(
+        players = players.map { p ->
+            PlayerUiState(
+                id = p.id,
+                name = p.name,
+                score = p.score,
+                isAlive = p.isAlive,
+                winnerRank = winnerList[p.id]
+            )
+        },
+        laserLineNumber = laserLineNumber,
+        laserLineTime = laserLineTime,
+        laserLineTimeMax = getEffectiveLaserTimeMax(),
+        isGameOver = isGameOver,
+        durationFormatted = formatDuration(),
+        winMode = settings.winMode,
+        laserMode = settings.laserMode,
+        countWinners = countWinners(),
+        countKilled = countKilled(),
+        winningScore = settings.winningScore,
+        winnerNames = winnerNamesStr,
+        isMuted = isMuted,
+        tick = System.currentTimeMillis()
+    )
+}
+
+sealed class GameState {
+    object Menu : GameState()
+    data class Playing(val uiState: GameUiState) : GameState()
+}
+
+class GameViewModel : ViewModel() {
+
+    private val _settings = MutableStateFlow(GameSettings())
+    val settings: StateFlow<GameSettings> = _settings.asStateFlow()
+
+    private val _gameState = MutableStateFlow<GameState>(GameState.Menu)
+    val gameState: StateFlow<GameState> = _gameState.asStateFlow()
+
+    val soundManager = SoundManager()
+
+    private var gameLoopJob: Job? = null
+    private var isPaused: Boolean = false
+
+    fun toggleMute() {
+        soundManager.isMuted = !soundManager.isMuted
+        soundManager.playButtonClick()
+        val current = _gameState.value
+        if (current is GameState.Playing) {
+            _gameState.value = GameState.Playing(current.uiState.copy(isMuted = soundManager.isMuted))
+        }
+    }
+
+    fun updatePlayerCount(delta: Int) {
+        val current = _settings.value
+        val newCount = (current.playerCount + delta).coerceIn(1, 10)
+        _settings.value = current.copy(playerCount = newCount)
+        soundManager.playButtonClick()
+    }
+
+    fun toggleLaserMode() {
+        val current = _settings.value
+        _settings.value = current.copy(laserMode = current.laserMode.next())
+        soundManager.playSettingToggle()
+    }
+
+    fun updateWinningScore(delta: Int) {
+        val current = _settings.value
+        val newScore = (current.winningScore + delta).coerceAtLeast(1)
+        _settings.value = current.copy(winningScore = newScore)
+        soundManager.playButtonClick()
+    }
+
+    fun toggleFastCat() {
+        val current = _settings.value
+        _settings.value = current.copy(fastCat = !current.fastCat)
+        soundManager.playSettingToggle()
+    }
+
+    fun setWinMode(winMode: WinMode) {
+        val current = _settings.value
+        _settings.value = current.copy(winMode = winMode)
+        soundManager.playButtonClick()
+    }
+
+    fun startGame(mode: WinMode) {
+        val currentSettings = _settings.value.copy(winMode = mode)
+        _settings.value = currentSettings
+        val engine = GameEngine(currentSettings)
+        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+        isPaused = false
+
+        soundManager.playStartGame()
+        startLoop(engine)
+    }
+
+    fun returnToMenu() {
+        soundManager.playButtonClick()
+        gameLoopJob?.cancel()
+        gameLoopJob = null
+        _gameState.value = GameState.Menu
+    }
+
+    fun togglePause() {
+        isPaused = !isPaused
+    }
+
+    fun restartGame() {
+        gameLoopJob?.cancel()
+        val currentSettings = _settings.value
+        val engine = GameEngine(currentSettings)
+        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+        isPaused = false
+
+        soundManager.playStartGame()
+        startLoop(engine)
+    }
+
+    private fun startLoop(engine: GameEngine) {
+        gameLoopJob?.cancel()
+        gameLoopJob = viewModelScope.launch {
+            var prevWinnersCount = 0
+            var prevKilledCount = 0
+
+            while (!engine.isGameOver) {
+                if (!isPaused) {
+                    if (engine.settings.laserMode != LaserMode.OFF) {
+                        engine.advanceLaserTime()
+                        soundManager.playLaserTick()
+
+                        engine.playRound()
+                        soundManager.playMove()
+
+                        val newWinners = engine.countWinners()
+                        if (newWinners > prevWinnersCount) {
+                            soundManager.playVictory()
+                            prevWinnersCount = newWinners
+                        }
+
+                        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+                        delay(400)
+
+                        engine.applyLaserCheck()
+                        val newKilled = engine.countKilled()
+                        if (newKilled > prevKilledCount) {
+                            if (engine.settings.laserMode == LaserMode.KILL) {
+                                soundManager.playEliminated()
+                            } else {
+                                soundManager.playLaserStrike()
+                            }
+                            prevKilledCount = newKilled
+                        } else if (engine.laserLineTime == engine.getEffectiveLaserTimeMax()) {
+                            soundManager.playLaserStrike()
+                        }
+
+                        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+                        delay(400)
+                    } else {
+                        engine.playRound()
+                        soundManager.playMove()
+
+                        val newWinners = engine.countWinners()
+                        if (newWinners > prevWinnersCount) {
+                            soundManager.playVictory()
+                            prevWinnersCount = newWinners
+                        }
+
+                        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+                        delay(600)
+                    }
+                } else {
+                    delay(200)
+                }
+            }
+            // Final emit
+            _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        gameLoopJob?.cancel()
+    }
+}
+

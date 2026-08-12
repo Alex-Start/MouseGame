@@ -1,0 +1,841 @@
+2025-09-28 16:17:05,706 - INFO - Change game type: 0
+2025-09-28 16:17:05,823 - INFO - Selected game mode: game type: WIN 1, kill type: Off, winning score: 10
+2025-09-28 16:17:06,206 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:06,206 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:17:06,208 - INFO - Current Scores:
+2025-09-28 16:17:06,209 - INFO - Player 1  : 1 points
+2025-09-28 16:17:06,210 - INFO - Player 2  : 0 points
+2025-09-28 16:17:06,211 - INFO - Player 3  : 0 points
+2025-09-28 16:17:06,212 - INFO - Player 4  : 0 points
+2025-09-28 16:17:06,214 - INFO - ------------------------------
+2025-09-28 16:17:07,219 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:07,220 - INFO - All moves backward (-1)
+2025-09-28 16:17:07,228 - INFO - Current Scores:
+2025-09-28 16:17:07,230 - INFO - Player 1  : 0 points
+2025-09-28 16:17:07,231 - INFO - Player 2  : 0 points
+2025-09-28 16:17:07,232 - INFO - Player 3  : 0 points
+2025-09-28 16:17:07,234 - INFO - Player 4  : 0 points
+2025-09-28 16:17:07,236 - INFO - ------------------------------
+2025-09-28 16:17:08,240 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:08,241 - INFO - Player 2   moves forward (+1)
+2025-09-28 16:17:08,246 - INFO - Current Scores:
+2025-09-28 16:17:08,248 - INFO - Player 1  : 0 points
+2025-09-28 16:17:08,249 - INFO - Player 2  : 1 points
+2025-09-28 16:17:08,251 - INFO - Player 3  : 0 points
+2025-09-28 16:17:08,252 - INFO - Player 4  : 0 points
+2025-09-28 16:17:08,254 - INFO - ------------------------------
+2025-09-28 16:17:09,258 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:09,259 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:17:09,263 - INFO - Current Scores:
+2025-09-28 16:17:09,265 - INFO - Player 1  : 0 points
+2025-09-28 16:17:09,266 - INFO - Player 2  : 1 points
+2025-09-28 16:17:09,268 - INFO - Player 3  : 0 points
+2025-09-28 16:17:09,270 - INFO - Player 4  : 1 points
+2025-09-28 16:17:09,272 - INFO - ------------------------------
+2025-09-28 16:17:10,277 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:10,277 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:10,279 - INFO - Current Scores:
+2025-09-28 16:17:10,280 - INFO - Player 1  : 0 points
+2025-09-28 16:17:10,280 - INFO - Player 2  : 1 points
+2025-09-28 16:17:10,281 - INFO - Player 3  : 1 points
+2025-09-28 16:17:10,282 - INFO - Player 4  : 1 points
+2025-09-28 16:17:10,282 - INFO - ------------------------------
+2025-09-28 16:17:11,284 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:11,285 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:11,291 - INFO - Current Scores:
+2025-09-28 16:17:11,292 - INFO - Player 1  : 0 points
+2025-09-28 16:17:11,294 - INFO - Player 2  : 1 points
+2025-09-28 16:17:11,296 - INFO - Player 3  : 2 points
+2025-09-28 16:17:11,298 - INFO - Player 4  : 1 points
+2025-09-28 16:17:11,300 - INFO - ------------------------------
+2025-09-28 16:17:12,304 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:12,306 - INFO - All moves backward (-1)
+2025-09-28 16:17:12,310 - INFO - Current Scores:
+2025-09-28 16:17:12,312 - INFO - Player 1  : 0 points
+2025-09-28 16:17:12,315 - INFO - Player 2  : 0 points
+2025-09-28 16:17:12,316 - INFO - Player 3  : 1 points
+2025-09-28 16:17:12,318 - INFO - Player 4  : 0 points
+2025-09-28 16:17:12,320 - INFO - ------------------------------
+2025-09-28 16:17:13,324 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:13,326 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:13,330 - INFO - Current Scores:
+2025-09-28 16:17:13,331 - INFO - Player 1  : 0 points
+2025-09-28 16:17:13,334 - INFO - Player 2  : 0 points
+2025-09-28 16:17:13,335 - INFO - Player 3  : 2 points
+2025-09-28 16:17:13,337 - INFO - Player 4  : 0 points
+2025-09-28 16:17:13,338 - INFO - ------------------------------
+2025-09-28 16:17:14,342 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:14,343 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:17:14,347 - INFO - Current Scores:
+2025-09-28 16:17:14,348 - INFO - Player 1  : 1 points
+2025-09-28 16:17:14,350 - INFO - Player 2  : 0 points
+2025-09-28 16:17:14,351 - INFO - Player 3  : 2 points
+2025-09-28 16:17:14,353 - INFO - Player 4  : 0 points
+2025-09-28 16:17:14,355 - INFO - ------------------------------
+2025-09-28 16:17:15,358 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:15,360 - INFO - All moves backward (-1)
+2025-09-28 16:17:15,365 - INFO - Current Scores:
+2025-09-28 16:17:15,366 - INFO - Player 1  : 0 points
+2025-09-28 16:17:15,368 - INFO - Player 2  : 0 points
+2025-09-28 16:17:15,370 - INFO - Player 3  : 1 points
+2025-09-28 16:17:15,372 - INFO - Player 4  : 0 points
+2025-09-28 16:17:15,374 - INFO - ------------------------------
+2025-09-28 16:17:16,380 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:16,381 - INFO - All moves backward (-1)
+2025-09-28 16:17:16,385 - INFO - Current Scores:
+2025-09-28 16:17:16,387 - INFO - Player 1  : 0 points
+2025-09-28 16:17:16,388 - INFO - Player 2  : 0 points
+2025-09-28 16:17:16,391 - INFO - Player 3  : 0 points
+2025-09-28 16:17:16,393 - INFO - Player 4  : 0 points
+2025-09-28 16:17:16,397 - INFO - ------------------------------
+2025-09-28 16:17:17,400 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:17,401 - INFO - All moves backward (-1)
+2025-09-28 16:17:17,405 - INFO - Current Scores:
+2025-09-28 16:17:17,407 - INFO - Player 1  : 0 points
+2025-09-28 16:17:17,409 - INFO - Player 2  : 0 points
+2025-09-28 16:17:17,410 - INFO - Player 3  : 0 points
+2025-09-28 16:17:17,412 - INFO - Player 4  : 0 points
+2025-09-28 16:17:17,413 - INFO - ------------------------------
+2025-09-28 16:17:18,417 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:18,418 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:18,423 - INFO - Current Scores:
+2025-09-28 16:17:18,425 - INFO - Player 1  : 0 points
+2025-09-28 16:17:18,427 - INFO - Player 2  : 0 points
+2025-09-28 16:17:18,429 - INFO - Player 3  : 1 points
+2025-09-28 16:17:18,431 - INFO - Player 4  : 0 points
+2025-09-28 16:17:18,433 - INFO - ------------------------------
+2025-09-28 16:17:19,437 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:19,438 - INFO - All players move forward (+1)
+2025-09-28 16:17:19,442 - INFO - Current Scores:
+2025-09-28 16:17:19,444 - INFO - Player 1  : 1 points
+2025-09-28 16:17:19,445 - INFO - Player 2  : 1 points
+2025-09-28 16:17:19,447 - INFO - Player 3  : 2 points
+2025-09-28 16:17:19,449 - INFO - Player 4  : 1 points
+2025-09-28 16:17:19,451 - INFO - ------------------------------
+2025-09-28 16:17:20,455 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:20,456 - INFO - All moves backward (-1)
+2025-09-28 16:17:20,460 - INFO - Current Scores:
+2025-09-28 16:17:20,462 - INFO - Player 1  : 0 points
+2025-09-28 16:17:20,464 - INFO - Player 2  : 0 points
+2025-09-28 16:17:20,465 - INFO - Player 3  : 1 points
+2025-09-28 16:17:20,467 - INFO - Player 4  : 0 points
+2025-09-28 16:17:20,468 - INFO - ------------------------------
+2025-09-28 16:17:21,473 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:21,475 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:17:21,479 - INFO - Current Scores:
+2025-09-28 16:17:21,480 - INFO - Player 1  : 0 points
+2025-09-28 16:17:21,483 - INFO - Player 2  : 0 points
+2025-09-28 16:17:21,484 - INFO - Player 3  : 1 points
+2025-09-28 16:17:21,486 - INFO - Player 4  : 1 points
+2025-09-28 16:17:21,487 - INFO - ------------------------------
+2025-09-28 16:17:22,490 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:22,491 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:22,495 - INFO - Current Scores:
+2025-09-28 16:17:22,497 - INFO - Player 1  : 0 points
+2025-09-28 16:17:22,499 - INFO - Player 2  : 0 points
+2025-09-28 16:17:22,500 - INFO - Player 3  : 2 points
+2025-09-28 16:17:22,502 - INFO - Player 4  : 1 points
+2025-09-28 16:17:22,504 - INFO - ------------------------------
+2025-09-28 16:17:23,508 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:23,509 - INFO - All players move forward (+1)
+2025-09-28 16:17:23,514 - INFO - Current Scores:
+2025-09-28 16:17:23,515 - INFO - Player 1  : 1 points
+2025-09-28 16:17:23,517 - INFO - Player 2  : 1 points
+2025-09-28 16:17:23,519 - INFO - Player 3  : 3 points
+2025-09-28 16:17:23,520 - INFO - Player 4  : 2 points
+2025-09-28 16:17:23,522 - INFO - ------------------------------
+2025-09-28 16:17:24,527 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:24,528 - INFO - All players move forward (+1)
+2025-09-28 16:17:24,530 - INFO - Current Scores:
+2025-09-28 16:17:24,530 - INFO - Player 1  : 2 points
+2025-09-28 16:17:24,531 - INFO - Player 2  : 2 points
+2025-09-28 16:17:24,532 - INFO - Player 3  : 4 points
+2025-09-28 16:17:24,532 - INFO - Player 4  : 3 points
+2025-09-28 16:17:24,533 - INFO - ------------------------------
+2025-09-28 16:17:25,535 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:25,536 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:25,539 - INFO - Current Scores:
+2025-09-28 16:17:25,541 - INFO - Player 1  : 2 points
+2025-09-28 16:17:25,542 - INFO - Player 2  : 2 points
+2025-09-28 16:17:25,545 - INFO - Player 3  : 5 points
+2025-09-28 16:17:25,547 - INFO - Player 4  : 3 points
+2025-09-28 16:17:25,548 - INFO - ------------------------------
+2025-09-28 16:17:26,552 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:26,553 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:17:26,558 - INFO - Current Scores:
+2025-09-28 16:17:26,559 - INFO - Player 1  : 3 points
+2025-09-28 16:17:26,561 - INFO - Player 2  : 2 points
+2025-09-28 16:17:26,563 - INFO - Player 3  : 5 points
+2025-09-28 16:17:26,564 - INFO - Player 4  : 3 points
+2025-09-28 16:17:26,566 - INFO - ------------------------------
+2025-09-28 16:17:27,570 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:27,571 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:27,575 - INFO - Current Scores:
+2025-09-28 16:17:27,578 - INFO - Player 1  : 3 points
+2025-09-28 16:17:27,580 - INFO - Player 2  : 2 points
+2025-09-28 16:17:27,581 - INFO - Player 3  : 6 points
+2025-09-28 16:17:27,583 - INFO - Player 4  : 3 points
+2025-09-28 16:17:27,586 - INFO - ------------------------------
+2025-09-28 16:17:28,590 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:28,591 - INFO - Player 2   moves forward (+1)
+2025-09-28 16:17:28,594 - INFO - Current Scores:
+2025-09-28 16:17:28,596 - INFO - Player 1  : 3 points
+2025-09-28 16:17:28,598 - INFO - Player 2  : 3 points
+2025-09-28 16:17:28,599 - INFO - Player 3  : 6 points
+2025-09-28 16:17:28,601 - INFO - Player 4  : 3 points
+2025-09-28 16:17:28,603 - INFO - ------------------------------
+2025-09-28 16:17:29,606 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:29,608 - INFO - Player 2   moves forward (+1)
+2025-09-28 16:17:29,612 - INFO - Current Scores:
+2025-09-28 16:17:29,613 - INFO - Player 1  : 3 points
+2025-09-28 16:17:29,615 - INFO - Player 2  : 4 points
+2025-09-28 16:17:29,616 - INFO - Player 3  : 6 points
+2025-09-28 16:17:29,618 - INFO - Player 4  : 3 points
+2025-09-28 16:17:29,619 - INFO - ------------------------------
+2025-09-28 16:17:30,623 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:30,624 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:30,628 - INFO - Current Scores:
+2025-09-28 16:17:30,630 - INFO - Player 1  : 3 points
+2025-09-28 16:17:30,631 - INFO - Player 2  : 4 points
+2025-09-28 16:17:30,633 - INFO - Player 3  : 7 points
+2025-09-28 16:17:30,635 - INFO - Player 4  : 3 points
+2025-09-28 16:17:30,637 - INFO - ------------------------------
+2025-09-28 16:17:31,641 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:31,642 - INFO - All moves backward (-1)
+2025-09-28 16:17:31,646 - INFO - Current Scores:
+2025-09-28 16:17:31,647 - INFO - Player 1  : 2 points
+2025-09-28 16:17:31,649 - INFO - Player 2  : 3 points
+2025-09-28 16:17:31,650 - INFO - Player 3  : 6 points
+2025-09-28 16:17:31,652 - INFO - Player 4  : 2 points
+2025-09-28 16:17:31,653 - INFO - ------------------------------
+2025-09-28 16:17:32,656 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:32,658 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:17:32,661 - INFO - Current Scores:
+2025-09-28 16:17:32,663 - INFO - Player 1  : 2 points
+2025-09-28 16:17:32,665 - INFO - Player 2  : 3 points
+2025-09-28 16:17:32,667 - INFO - Player 3  : 6 points
+2025-09-28 16:17:32,669 - INFO - Player 4  : 3 points
+2025-09-28 16:17:32,672 - INFO - ------------------------------
+2025-09-28 16:17:33,675 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:33,677 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:17:33,680 - INFO - Current Scores:
+2025-09-28 16:17:33,682 - INFO - Player 1  : 2 points
+2025-09-28 16:17:33,684 - INFO - Player 2  : 3 points
+2025-09-28 16:17:33,686 - INFO - Player 3  : 6 points
+2025-09-28 16:17:33,687 - INFO - Player 4  : 4 points
+2025-09-28 16:17:33,689 - INFO - ------------------------------
+2025-09-28 16:17:34,692 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:34,694 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:17:34,698 - INFO - Current Scores:
+2025-09-28 16:17:34,700 - INFO - Player 1  : 3 points
+2025-09-28 16:17:34,702 - INFO - Player 2  : 3 points
+2025-09-28 16:17:34,703 - INFO - Player 3  : 6 points
+2025-09-28 16:17:34,705 - INFO - Player 4  : 4 points
+2025-09-28 16:17:34,706 - INFO - ------------------------------
+2025-09-28 16:17:35,709 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:35,710 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:17:35,715 - INFO - Current Scores:
+2025-09-28 16:17:35,717 - INFO - Player 1  : 3 points
+2025-09-28 16:17:35,718 - INFO - Player 2  : 3 points
+2025-09-28 16:17:35,720 - INFO - Player 3  : 6 points
+2025-09-28 16:17:35,721 - INFO - Player 4  : 5 points
+2025-09-28 16:17:35,723 - INFO - ------------------------------
+2025-09-28 16:17:36,727 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:36,729 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:36,733 - INFO - Current Scores:
+2025-09-28 16:17:36,735 - INFO - Player 1  : 3 points
+2025-09-28 16:17:36,737 - INFO - Player 2  : 3 points
+2025-09-28 16:17:36,738 - INFO - Player 3  : 7 points
+2025-09-28 16:17:36,740 - INFO - Player 4  : 5 points
+2025-09-28 16:17:36,741 - INFO - ------------------------------
+2025-09-28 16:17:37,745 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:37,746 - INFO - All players move forward (+1)
+2025-09-28 16:17:37,750 - INFO - Current Scores:
+2025-09-28 16:17:37,752 - INFO - Player 1  : 4 points
+2025-09-28 16:17:37,753 - INFO - Player 2  : 4 points
+2025-09-28 16:17:37,755 - INFO - Player 3  : 8 points
+2025-09-28 16:17:37,757 - INFO - Player 4  : 6 points
+2025-09-28 16:17:37,761 - INFO - ------------------------------
+2025-09-28 16:17:38,764 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:38,766 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:17:38,769 - INFO - Current Scores:
+2025-09-28 16:17:38,771 - INFO - Player 1  : 4 points
+2025-09-28 16:17:38,773 - INFO - Player 2  : 4 points
+2025-09-28 16:17:38,775 - INFO - Player 3  : 8 points
+2025-09-28 16:17:38,776 - INFO - Player 4  : 7 points
+2025-09-28 16:17:38,777 - INFO - ------------------------------
+2025-09-28 16:17:39,779 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:39,780 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:17:39,782 - INFO - Current Scores:
+2025-09-28 16:17:39,783 - INFO - Player 1  : 4 points
+2025-09-28 16:17:39,784 - INFO - Player 2  : 4 points
+2025-09-28 16:17:39,784 - INFO - Player 3  : 8 points
+2025-09-28 16:17:39,785 - INFO - Player 4  : 8 points
+2025-09-28 16:17:39,786 - INFO - ------------------------------
+2025-09-28 16:17:40,788 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:40,789 - INFO - All moves backward (-1)
+2025-09-28 16:17:40,791 - INFO - Current Scores:
+2025-09-28 16:17:40,791 - INFO - Player 1  : 3 points
+2025-09-28 16:17:40,792 - INFO - Player 2  : 3 points
+2025-09-28 16:17:40,793 - INFO - Player 3  : 7 points
+2025-09-28 16:17:40,795 - INFO - Player 4  : 7 points
+2025-09-28 16:17:40,796 - INFO - ------------------------------
+2025-09-28 16:17:41,798 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:41,799 - INFO - All players move forward (+1)
+2025-09-28 16:17:41,801 - INFO - Current Scores:
+2025-09-28 16:17:41,802 - INFO - Player 1  : 4 points
+2025-09-28 16:17:41,803 - INFO - Player 2  : 4 points
+2025-09-28 16:17:41,804 - INFO - Player 3  : 8 points
+2025-09-28 16:17:41,805 - INFO - Player 4  : 8 points
+2025-09-28 16:17:41,805 - INFO - ------------------------------
+2025-09-28 16:17:42,808 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:42,808 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:17:42,809 - INFO - Current Scores:
+2025-09-28 16:17:42,810 - INFO - Player 1  : 4 points
+2025-09-28 16:17:42,810 - INFO - Player 2  : 4 points
+2025-09-28 16:17:42,810 - INFO - Player 3  : 8 points
+2025-09-28 16:17:42,811 - INFO - Player 4  : 9 points
+2025-09-28 16:17:42,811 - INFO - ------------------------------
+2025-09-28 16:17:43,813 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:43,814 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:17:43,816 - INFO - Current Scores:
+2025-09-28 16:17:43,817 - INFO - Player 1  : 5 points
+2025-09-28 16:17:43,817 - INFO - Player 2  : 4 points
+2025-09-28 16:17:43,818 - INFO - Player 3  : 8 points
+2025-09-28 16:17:43,819 - INFO - Player 4  : 9 points
+2025-09-28 16:17:43,820 - INFO - ------------------------------
+2025-09-28 16:17:44,823 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:44,824 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:44,825 - INFO - Current Scores:
+2025-09-28 16:17:44,826 - INFO - Player 1  : 5 points
+2025-09-28 16:17:44,827 - INFO - Player 2  : 4 points
+2025-09-28 16:17:44,827 - INFO - Player 3  : 9 points
+2025-09-28 16:17:44,828 - INFO - Player 4  : 9 points
+2025-09-28 16:17:44,828 - INFO - ------------------------------
+2025-09-28 16:17:45,830 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:45,831 - INFO - All moves backward (-1)
+2025-09-28 16:17:45,833 - INFO - Current Scores:
+2025-09-28 16:17:45,834 - INFO - Player 1  : 4 points
+2025-09-28 16:17:45,835 - INFO - Player 2  : 3 points
+2025-09-28 16:17:45,836 - INFO - Player 3  : 8 points
+2025-09-28 16:17:45,836 - INFO - Player 4  : 8 points
+2025-09-28 16:17:45,837 - INFO - ------------------------------
+2025-09-28 16:17:46,839 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:46,840 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:17:46,842 - INFO - Current Scores:
+2025-09-28 16:17:46,842 - INFO - Player 1  : 4 points
+2025-09-28 16:17:46,843 - INFO - Player 2  : 3 points
+2025-09-28 16:17:46,844 - INFO - Player 3  : 9 points
+2025-09-28 16:17:46,845 - INFO - Player 4  : 8 points
+2025-09-28 16:17:46,846 - INFO - ------------------------------
+2025-09-28 16:17:47,847 - INFO - players: 4 win: 0 killed: 0
+2025-09-28 16:17:47,849 - INFO - All players move forward (+1)
+2025-09-28 16:17:47,850 - INFO - Current Scores:
+2025-09-28 16:17:47,851 - INFO - Player 1  : 5 points
+2025-09-28 16:17:47,852 - INFO - Player 2  : 4 points
+2025-09-28 16:17:47,853 - INFO - Player 3  : 10 points
+2025-09-28 16:17:47,853 - INFO - Player 4  : 9 points
+2025-09-28 16:17:47,854 - INFO - ------------------------------
+2025-09-28 16:17:47,855 - INFO - 🏆 Player 3   wins the game! 1 🏆
+2025-09-28 16:17:48,859 - INFO - players: 4 win: 1 killed: 0
+2025-09-28 16:17:48,860 - INFO - <<< Game Over! >>>
+2025-09-28 16:17:48,861 - INFO - duration: 00:00:43
+2025-09-28 16:18:06,811 - INFO - Change game type: 0
+2025-09-28 16:18:06,895 - INFO - Selected game mode: game type: WIN 1, kill type: Kill, winning score: 10
+2025-09-28 16:18:07,143 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:07,144 - INFO - Killer line: 1 0
+2025-09-28 16:18:07,146 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:07,147 - INFO - Current Scores:
+2025-09-28 16:18:07,147 - INFO - Player 1  : 0 points
+2025-09-28 16:18:07,147 - INFO - Player 2  : 0 points
+2025-09-28 16:18:07,147 - INFO - Player 3  : 0 points
+2025-09-28 16:18:07,148 - INFO - Player 4  : 1 points
+2025-09-28 16:18:07,148 - INFO - Player 5  : 0 points
+2025-09-28 16:18:07,148 - INFO - ------------------------------
+2025-09-28 16:18:08,158 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:08,160 - INFO - Killer line: 2 0
+2025-09-28 16:18:08,163 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:08,164 - INFO - Current Scores:
+2025-09-28 16:18:08,165 - INFO - Player 1  : 0 points
+2025-09-28 16:18:08,166 - INFO - Player 2  : 0 points
+2025-09-28 16:18:08,166 - INFO - Player 3  : 0 points
+2025-09-28 16:18:08,167 - INFO - Player 4  : 2 points
+2025-09-28 16:18:08,168 - INFO - Player 5  : 0 points
+2025-09-28 16:18:08,169 - INFO - ------------------------------
+2025-09-28 16:18:09,174 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:09,175 - INFO - Killer line: 3 0
+2025-09-28 16:18:09,177 - INFO - Player 2   moves forward (+1)
+2025-09-28 16:18:09,177 - INFO - Current Scores:
+2025-09-28 16:18:09,178 - INFO - Player 1  : 0 points
+2025-09-28 16:18:09,179 - INFO - Player 2  : 1 points
+2025-09-28 16:18:09,180 - INFO - Player 3  : 0 points
+2025-09-28 16:18:09,180 - INFO - Player 4  : 2 points
+2025-09-28 16:18:09,181 - INFO - Player 5  : 0 points
+2025-09-28 16:18:09,182 - INFO - ------------------------------
+2025-09-28 16:18:10,188 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:10,189 - INFO - Killer line: 4 0
+2025-09-28 16:18:10,191 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:10,192 - INFO - Current Scores:
+2025-09-28 16:18:10,192 - INFO - Player 1  : 0 points
+2025-09-28 16:18:10,193 - INFO - Player 2  : 1 points
+2025-09-28 16:18:10,194 - INFO - Player 3  : 0 points
+2025-09-28 16:18:10,194 - INFO - Player 4  : 3 points
+2025-09-28 16:18:10,195 - INFO - Player 5  : 0 points
+2025-09-28 16:18:10,196 - INFO - ------------------------------
+2025-09-28 16:18:11,200 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:11,201 - INFO - Killer line: 5 0
+2025-09-28 16:18:11,202 - INFO - All moves backward (-1)
+2025-09-28 16:18:11,202 - INFO - Current Scores:
+2025-09-28 16:18:11,203 - INFO - Player 1  : 0 points
+2025-09-28 16:18:11,203 - INFO - Player 2  : 0 points
+2025-09-28 16:18:11,204 - INFO - Player 3  : 0 points
+2025-09-28 16:18:11,204 - INFO - Player 4  : 2 points
+2025-09-28 16:18:11,204 - INFO - Player 5  : 0 points
+2025-09-28 16:18:11,204 - INFO - ------------------------------
+2025-09-28 16:18:12,208 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:12,209 - INFO - Killer line: 6 0
+2025-09-28 16:18:12,210 - INFO - Player 2   moves forward (+1)
+2025-09-28 16:18:12,211 - INFO - Current Scores:
+2025-09-28 16:18:12,212 - INFO - Player 1  : 0 points
+2025-09-28 16:18:12,213 - INFO - Player 2  : 1 points
+2025-09-28 16:18:12,213 - INFO - Player 3  : 0 points
+2025-09-28 16:18:12,214 - INFO - Player 4  : 2 points
+2025-09-28 16:18:12,215 - INFO - Player 5  : 0 points
+2025-09-28 16:18:12,216 - INFO - ------------------------------
+2025-09-28 16:18:13,221 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:13,222 - INFO - Killer line: 7 0
+2025-09-28 16:18:13,223 - INFO - Player 2   moves forward (+1)
+2025-09-28 16:18:13,224 - INFO - Current Scores:
+2025-09-28 16:18:13,225 - INFO - Player 1  : 0 points
+2025-09-28 16:18:13,226 - INFO - Player 2  : 2 points
+2025-09-28 16:18:13,226 - INFO - Player 3  : 0 points
+2025-09-28 16:18:13,227 - INFO - Player 4  : 2 points
+2025-09-28 16:18:13,228 - INFO - Player 5  : 0 points
+2025-09-28 16:18:13,229 - INFO - ------------------------------
+2025-09-28 16:18:14,234 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:14,235 - INFO - Killer line: 8 0
+2025-09-28 16:18:14,236 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:18:14,237 - INFO - Current Scores:
+2025-09-28 16:18:14,238 - INFO - Player 1  : 1 points
+2025-09-28 16:18:14,238 - INFO - Player 2  : 2 points
+2025-09-28 16:18:14,239 - INFO - Player 3  : 0 points
+2025-09-28 16:18:14,240 - INFO - Player 4  : 2 points
+2025-09-28 16:18:14,240 - INFO - Player 5  : 0 points
+2025-09-28 16:18:14,241 - INFO - ------------------------------
+2025-09-28 16:18:15,246 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:15,247 - INFO - Killer line: 9 0
+2025-09-28 16:18:15,249 - INFO - All moves backward (-1)
+2025-09-28 16:18:15,250 - INFO - Current Scores:
+2025-09-28 16:18:15,250 - INFO - Player 1  : 0 points
+2025-09-28 16:18:15,251 - INFO - Player 2  : 1 points
+2025-09-28 16:18:15,252 - INFO - Player 3  : 0 points
+2025-09-28 16:18:15,253 - INFO - Player 4  : 1 points
+2025-09-28 16:18:15,253 - INFO - Player 5  : 0 points
+2025-09-28 16:18:15,254 - INFO - ------------------------------
+2025-09-28 16:18:16,258 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:16,259 - INFO - Killer line: 10 0
+2025-09-28 16:18:16,261 - INFO - All players move forward (+1)
+2025-09-28 16:18:16,262 - INFO - Current Scores:
+2025-09-28 16:18:16,262 - INFO - Player 1  : 1 points
+2025-09-28 16:18:16,263 - INFO - Player 2  : 2 points
+2025-09-28 16:18:16,264 - INFO - Player 3  : 1 points
+2025-09-28 16:18:16,265 - INFO - Player 4  : 2 points
+2025-09-28 16:18:16,266 - INFO - Player 5  : 1 points
+2025-09-28 16:18:16,267 - INFO - ------------------------------
+2025-09-28 16:18:17,271 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:17,272 - INFO - Killer line: 0 1
+2025-09-28 16:18:17,274 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:17,275 - INFO - Current Scores:
+2025-09-28 16:18:17,276 - INFO - Player 1  : 1 points
+2025-09-28 16:18:17,277 - INFO - Player 2  : 2 points
+2025-09-28 16:18:17,278 - INFO - Player 3  : 1 points
+2025-09-28 16:18:17,278 - INFO - Player 4  : 3 points
+2025-09-28 16:18:17,279 - INFO - Player 5  : 1 points
+2025-09-28 16:18:17,279 - INFO - ------------------------------
+2025-09-28 16:18:18,284 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:18,285 - INFO - Killer line: 1 1
+2025-09-28 16:18:18,287 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:18:18,287 - INFO - Current Scores:
+2025-09-28 16:18:18,288 - INFO - Player 1  : 2 points
+2025-09-28 16:18:18,289 - INFO - Player 2  : 2 points
+2025-09-28 16:18:18,289 - INFO - Player 3  : 1 points
+2025-09-28 16:18:18,290 - INFO - Player 4  : 3 points
+2025-09-28 16:18:18,290 - INFO - Player 5  : 1 points
+2025-09-28 16:18:18,291 - INFO - ------------------------------
+2025-09-28 16:18:19,296 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:19,297 - INFO - Killer line: 2 1
+2025-09-28 16:18:19,298 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:18:19,299 - INFO - Current Scores:
+2025-09-28 16:18:19,299 - INFO - Player 1  : 3 points
+2025-09-28 16:18:19,300 - INFO - Player 2  : 2 points
+2025-09-28 16:18:19,301 - INFO - Player 3  : 1 points
+2025-09-28 16:18:19,302 - INFO - Player 4  : 3 points
+2025-09-28 16:18:19,302 - INFO - Player 5  : 1 points
+2025-09-28 16:18:19,304 - INFO - ------------------------------
+2025-09-28 16:18:20,309 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:20,310 - INFO - Killer line: 3 1
+2025-09-28 16:18:20,312 - INFO - All players move forward (+1)
+2025-09-28 16:18:20,312 - INFO - Current Scores:
+2025-09-28 16:18:20,313 - INFO - Player 1  : 4 points
+2025-09-28 16:18:20,314 - INFO - Player 2  : 3 points
+2025-09-28 16:18:20,315 - INFO - Player 3  : 2 points
+2025-09-28 16:18:20,316 - INFO - Player 4  : 4 points
+2025-09-28 16:18:20,317 - INFO - Player 5  : 2 points
+2025-09-28 16:18:20,318 - INFO - ------------------------------
+2025-09-28 16:18:21,323 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:21,324 - INFO - Killer line: 4 1
+2025-09-28 16:18:21,325 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:18:21,326 - INFO - Current Scores:
+2025-09-28 16:18:21,326 - INFO - Player 1  : 4 points
+2025-09-28 16:18:21,327 - INFO - Player 2  : 3 points
+2025-09-28 16:18:21,328 - INFO - Player 3  : 3 points
+2025-09-28 16:18:21,328 - INFO - Player 4  : 4 points
+2025-09-28 16:18:21,329 - INFO - Player 5  : 2 points
+2025-09-28 16:18:21,330 - INFO - ------------------------------
+2025-09-28 16:18:22,335 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:22,336 - INFO - Killer line: 5 1
+2025-09-28 16:18:22,337 - INFO - Player 5   moves forward (+1)
+2025-09-28 16:18:22,338 - INFO - Current Scores:
+2025-09-28 16:18:22,339 - INFO - Player 1  : 4 points
+2025-09-28 16:18:22,340 - INFO - Player 2  : 3 points
+2025-09-28 16:18:22,340 - INFO - Player 3  : 3 points
+2025-09-28 16:18:22,341 - INFO - Player 4  : 4 points
+2025-09-28 16:18:22,343 - INFO - Player 5  : 3 points
+2025-09-28 16:18:22,343 - INFO - ------------------------------
+2025-09-28 16:18:23,347 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:23,348 - INFO - Killer line: 6 1
+2025-09-28 16:18:23,348 - INFO - Player 5   moves forward (+1)
+2025-09-28 16:18:23,349 - INFO - Current Scores:
+2025-09-28 16:18:23,349 - INFO - Player 1  : 4 points
+2025-09-28 16:18:23,349 - INFO - Player 2  : 3 points
+2025-09-28 16:18:23,350 - INFO - Player 3  : 3 points
+2025-09-28 16:18:23,350 - INFO - Player 4  : 4 points
+2025-09-28 16:18:23,350 - INFO - Player 5  : 4 points
+2025-09-28 16:18:23,350 - INFO - ------------------------------
+2025-09-28 16:18:24,354 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:24,355 - INFO - Killer line: 7 1
+2025-09-28 16:18:24,356 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:18:24,357 - INFO - Current Scores:
+2025-09-28 16:18:24,358 - INFO - Player 1  : 4 points
+2025-09-28 16:18:24,359 - INFO - Player 2  : 3 points
+2025-09-28 16:18:24,359 - INFO - Player 3  : 4 points
+2025-09-28 16:18:24,360 - INFO - Player 4  : 4 points
+2025-09-28 16:18:24,361 - INFO - Player 5  : 4 points
+2025-09-28 16:18:24,362 - INFO - ------------------------------
+2025-09-28 16:18:25,366 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:25,367 - INFO - Killer line: 8 1
+2025-09-28 16:18:25,369 - INFO - All moves backward (-1)
+2025-09-28 16:18:25,370 - INFO - Current Scores:
+2025-09-28 16:18:25,370 - INFO - Player 1  : 3 points
+2025-09-28 16:18:25,371 - INFO - Player 2  : 2 points
+2025-09-28 16:18:25,372 - INFO - Player 3  : 3 points
+2025-09-28 16:18:25,373 - INFO - Player 4  : 3 points
+2025-09-28 16:18:25,373 - INFO - Player 5  : 3 points
+2025-09-28 16:18:25,374 - INFO - ------------------------------
+2025-09-28 16:18:26,379 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:26,380 - INFO - Killer line: 9 1
+2025-09-28 16:18:26,381 - INFO - All moves backward (-1)
+2025-09-28 16:18:26,382 - INFO - Current Scores:
+2025-09-28 16:18:26,383 - INFO - Player 1  : 2 points
+2025-09-28 16:18:26,384 - INFO - Player 2  : 1 points
+2025-09-28 16:18:26,385 - INFO - Player 3  : 2 points
+2025-09-28 16:18:26,385 - INFO - Player 4  : 2 points
+2025-09-28 16:18:26,386 - INFO - Player 5  : 2 points
+2025-09-28 16:18:26,387 - INFO - ------------------------------
+2025-09-28 16:18:27,391 - INFO - players: 5 win: 0 killed: 0
+2025-09-28 16:18:27,392 - INFO - Killer line: 10 1
+2025-09-28 16:18:27,393 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:18:27,394 - INFO - Current Scores:
+2025-09-28 16:18:27,395 - INFO - Player 1  : 2 points
+2025-09-28 16:18:27,396 - INFO - Player 2  : 1 points
+2025-09-28 16:18:27,396 - INFO - Player 3  : 3 points
+2025-09-28 16:18:27,397 - INFO - Player 4  : 2 points
+2025-09-28 16:18:27,398 - INFO - Player 5  : 2 points
+2025-09-28 16:18:27,399 - INFO - ------------------------------
+2025-09-28 16:18:27,902 - INFO - Kill Player: Player 2   (1)=>0
+2025-09-28 16:18:28,405 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:28,406 - INFO - Killer line: 0 2
+2025-09-28 16:18:28,407 - INFO - All moves backward (-1)
+2025-09-28 16:18:28,408 - INFO - Current Scores:
+2025-09-28 16:18:28,409 - INFO - Player 1  : 1 points
+2025-09-28 16:18:28,409 - INFO - Player 2  : 1 points
+2025-09-28 16:18:28,410 - INFO - Player 3  : 2 points
+2025-09-28 16:18:28,411 - INFO - Player 4  : 1 points
+2025-09-28 16:18:28,411 - INFO - Player 5  : 1 points
+2025-09-28 16:18:28,412 - INFO - ------------------------------
+2025-09-28 16:18:29,416 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:29,417 - INFO - Killer line: 1 2
+2025-09-28 16:18:29,418 - INFO - All players move forward (+1)
+2025-09-28 16:18:29,419 - INFO - Current Scores:
+2025-09-28 16:18:29,420 - INFO - Player 1  : 2 points
+2025-09-28 16:18:29,420 - INFO - Player 2  : 1 points
+2025-09-28 16:18:29,421 - INFO - Player 3  : 3 points
+2025-09-28 16:18:29,422 - INFO - Player 4  : 2 points
+2025-09-28 16:18:29,423 - INFO - Player 5  : 2 points
+2025-09-28 16:18:29,424 - INFO - ------------------------------
+2025-09-28 16:18:30,429 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:30,430 - INFO - Killer line: 2 2
+2025-09-28 16:18:30,432 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:18:30,433 - INFO - Current Scores:
+2025-09-28 16:18:30,433 - INFO - Player 1  : 3 points
+2025-09-28 16:18:30,434 - INFO - Player 2  : 1 points
+2025-09-28 16:18:30,435 - INFO - Player 3  : 3 points
+2025-09-28 16:18:30,436 - INFO - Player 4  : 2 points
+2025-09-28 16:18:30,436 - INFO - Player 5  : 2 points
+2025-09-28 16:18:30,437 - INFO - ------------------------------
+2025-09-28 16:18:31,441 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:31,442 - INFO - Killer line: 3 2
+2025-09-28 16:18:31,443 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:31,443 - INFO - Current Scores:
+2025-09-28 16:18:31,443 - INFO - Player 1  : 3 points
+2025-09-28 16:18:31,444 - INFO - Player 2  : 1 points
+2025-09-28 16:18:31,444 - INFO - Player 3  : 3 points
+2025-09-28 16:18:31,444 - INFO - Player 4  : 3 points
+2025-09-28 16:18:31,444 - INFO - Player 5  : 2 points
+2025-09-28 16:18:31,445 - INFO - ------------------------------
+2025-09-28 16:18:32,449 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:32,450 - INFO - Killer line: 4 2
+2025-09-28 16:18:32,451 - INFO - All players move forward (+1)
+2025-09-28 16:18:32,452 - INFO - Current Scores:
+2025-09-28 16:18:32,453 - INFO - Player 1  : 4 points
+2025-09-28 16:18:32,454 - INFO - Player 2  : 1 points
+2025-09-28 16:18:32,454 - INFO - Player 3  : 4 points
+2025-09-28 16:18:32,455 - INFO - Player 4  : 4 points
+2025-09-28 16:18:32,456 - INFO - Player 5  : 3 points
+2025-09-28 16:18:32,456 - INFO - ------------------------------
+2025-09-28 16:18:33,462 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:33,463 - INFO - Killer line: 5 2
+2025-09-28 16:18:33,465 - INFO - All moves backward (-1)
+2025-09-28 16:18:33,466 - INFO - Current Scores:
+2025-09-28 16:18:33,466 - INFO - Player 1  : 3 points
+2025-09-28 16:18:33,467 - INFO - Player 2  : 1 points
+2025-09-28 16:18:33,468 - INFO - Player 3  : 3 points
+2025-09-28 16:18:33,469 - INFO - Player 4  : 3 points
+2025-09-28 16:18:33,469 - INFO - Player 5  : 2 points
+2025-09-28 16:18:33,470 - INFO - ------------------------------
+2025-09-28 16:18:34,475 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:34,476 - INFO - Killer line: 6 2
+2025-09-28 16:18:34,477 - INFO - Player 5   moves forward (+1)
+2025-09-28 16:18:34,478 - INFO - Current Scores:
+2025-09-28 16:18:34,479 - INFO - Player 1  : 3 points
+2025-09-28 16:18:34,479 - INFO - Player 2  : 1 points
+2025-09-28 16:18:34,480 - INFO - Player 3  : 3 points
+2025-09-28 16:18:34,481 - INFO - Player 4  : 3 points
+2025-09-28 16:18:34,481 - INFO - Player 5  : 3 points
+2025-09-28 16:18:34,482 - INFO - ------------------------------
+2025-09-28 16:18:35,486 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:35,487 - INFO - Killer line: 7 2
+2025-09-28 16:18:35,489 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:35,489 - INFO - Current Scores:
+2025-09-28 16:18:35,490 - INFO - Player 1  : 3 points
+2025-09-28 16:18:35,491 - INFO - Player 2  : 1 points
+2025-09-28 16:18:35,492 - INFO - Player 3  : 3 points
+2025-09-28 16:18:35,492 - INFO - Player 4  : 4 points
+2025-09-28 16:18:35,493 - INFO - Player 5  : 3 points
+2025-09-28 16:18:35,494 - INFO - ------------------------------
+2025-09-28 16:18:36,498 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:36,499 - INFO - Killer line: 8 2
+2025-09-28 16:18:36,501 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:36,501 - INFO - Current Scores:
+2025-09-28 16:18:36,502 - INFO - Player 1  : 3 points
+2025-09-28 16:18:36,503 - INFO - Player 2  : 1 points
+2025-09-28 16:18:36,504 - INFO - Player 3  : 3 points
+2025-09-28 16:18:36,504 - INFO - Player 4  : 5 points
+2025-09-28 16:18:36,505 - INFO - Player 5  : 3 points
+2025-09-28 16:18:36,506 - INFO - ------------------------------
+2025-09-28 16:18:37,511 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:37,513 - INFO - Killer line: 9 2
+2025-09-28 16:18:37,514 - INFO - Player 1   moves forward (+1)
+2025-09-28 16:18:37,515 - INFO - Current Scores:
+2025-09-28 16:18:37,516 - INFO - Player 1  : 4 points
+2025-09-28 16:18:37,516 - INFO - Player 2  : 1 points
+2025-09-28 16:18:37,517 - INFO - Player 3  : 3 points
+2025-09-28 16:18:37,518 - INFO - Player 4  : 5 points
+2025-09-28 16:18:37,519 - INFO - Player 5  : 3 points
+2025-09-28 16:18:37,519 - INFO - ------------------------------
+2025-09-28 16:18:38,524 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:38,525 - INFO - Killer line: 0 3
+2025-09-28 16:18:38,527 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:38,527 - INFO - Current Scores:
+2025-09-28 16:18:38,528 - INFO - Player 1  : 4 points
+2025-09-28 16:18:38,528 - INFO - Player 2  : 1 points
+2025-09-28 16:18:38,529 - INFO - Player 3  : 3 points
+2025-09-28 16:18:38,529 - INFO - Player 4  : 6 points
+2025-09-28 16:18:38,530 - INFO - Player 5  : 3 points
+2025-09-28 16:18:38,531 - INFO - ------------------------------
+2025-09-28 16:18:39,535 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:39,536 - INFO - Killer line: 1 3
+2025-09-28 16:18:39,538 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:18:39,538 - INFO - Current Scores:
+2025-09-28 16:18:39,539 - INFO - Player 1  : 4 points
+2025-09-28 16:18:39,540 - INFO - Player 2  : 1 points
+2025-09-28 16:18:39,540 - INFO - Player 3  : 4 points
+2025-09-28 16:18:39,541 - INFO - Player 4  : 6 points
+2025-09-28 16:18:39,542 - INFO - Player 5  : 3 points
+2025-09-28 16:18:39,543 - INFO - ------------------------------
+2025-09-28 16:18:40,549 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:40,550 - INFO - Killer line: 2 3
+2025-09-28 16:18:40,552 - INFO - Player 5   moves forward (+1)
+2025-09-28 16:18:40,553 - INFO - Current Scores:
+2025-09-28 16:18:40,554 - INFO - Player 1  : 4 points
+2025-09-28 16:18:40,554 - INFO - Player 2  : 1 points
+2025-09-28 16:18:40,555 - INFO - Player 3  : 4 points
+2025-09-28 16:18:40,556 - INFO - Player 4  : 6 points
+2025-09-28 16:18:40,556 - INFO - Player 5  : 4 points
+2025-09-28 16:18:40,557 - INFO - ------------------------------
+2025-09-28 16:18:41,562 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:41,562 - INFO - Killer line: 3 3
+2025-09-28 16:18:41,564 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:18:41,565 - INFO - Current Scores:
+2025-09-28 16:18:41,565 - INFO - Player 1  : 4 points
+2025-09-28 16:18:41,566 - INFO - Player 2  : 1 points
+2025-09-28 16:18:41,567 - INFO - Player 3  : 5 points
+2025-09-28 16:18:41,567 - INFO - Player 4  : 6 points
+2025-09-28 16:18:41,568 - INFO - Player 5  : 4 points
+2025-09-28 16:18:41,568 - INFO - ------------------------------
+2025-09-28 16:18:42,573 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:42,574 - INFO - Killer line: 4 3
+2025-09-28 16:18:42,576 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:42,577 - INFO - Current Scores:
+2025-09-28 16:18:42,577 - INFO - Player 1  : 4 points
+2025-09-28 16:18:42,578 - INFO - Player 2  : 1 points
+2025-09-28 16:18:42,579 - INFO - Player 3  : 5 points
+2025-09-28 16:18:42,579 - INFO - Player 4  : 7 points
+2025-09-28 16:18:42,580 - INFO - Player 5  : 4 points
+2025-09-28 16:18:42,581 - INFO - ------------------------------
+2025-09-28 16:18:43,586 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:43,587 - INFO - Killer line: 5 3
+2025-09-28 16:18:43,589 - INFO - Player 5   moves forward (+1)
+2025-09-28 16:18:43,589 - INFO - Current Scores:
+2025-09-28 16:18:43,590 - INFO - Player 1  : 4 points
+2025-09-28 16:18:43,591 - INFO - Player 2  : 1 points
+2025-09-28 16:18:43,592 - INFO - Player 3  : 5 points
+2025-09-28 16:18:43,592 - INFO - Player 4  : 7 points
+2025-09-28 16:18:43,593 - INFO - Player 5  : 5 points
+2025-09-28 16:18:43,594 - INFO - ------------------------------
+2025-09-28 16:18:44,598 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:44,599 - INFO - Killer line: 6 3
+2025-09-28 16:18:44,601 - INFO - Player 5   moves forward (+1)
+2025-09-28 16:18:44,601 - INFO - Current Scores:
+2025-09-28 16:18:44,602 - INFO - Player 1  : 4 points
+2025-09-28 16:18:44,603 - INFO - Player 2  : 1 points
+2025-09-28 16:18:44,603 - INFO - Player 3  : 5 points
+2025-09-28 16:18:44,604 - INFO - Player 4  : 7 points
+2025-09-28 16:18:44,605 - INFO - Player 5  : 6 points
+2025-09-28 16:18:44,606 - INFO - ------------------------------
+2025-09-28 16:18:45,610 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:45,611 - INFO - Killer line: 7 3
+2025-09-28 16:18:45,612 - INFO - Player 5   moves forward (+1)
+2025-09-28 16:18:45,613 - INFO - Current Scores:
+2025-09-28 16:18:45,614 - INFO - Player 1  : 4 points
+2025-09-28 16:18:45,615 - INFO - Player 2  : 1 points
+2025-09-28 16:18:45,615 - INFO - Player 3  : 5 points
+2025-09-28 16:18:45,616 - INFO - Player 4  : 7 points
+2025-09-28 16:18:45,617 - INFO - Player 5  : 7 points
+2025-09-28 16:18:45,618 - INFO - ------------------------------
+2025-09-28 16:18:46,623 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:46,624 - INFO - Killer line: 8 3
+2025-09-28 16:18:46,625 - INFO - Player 5   moves forward (+1)
+2025-09-28 16:18:46,625 - INFO - Current Scores:
+2025-09-28 16:18:46,625 - INFO - Player 1  : 4 points
+2025-09-28 16:18:46,626 - INFO - Player 2  : 1 points
+2025-09-28 16:18:46,626 - INFO - Player 3  : 5 points
+2025-09-28 16:18:46,626 - INFO - Player 4  : 7 points
+2025-09-28 16:18:46,626 - INFO - Player 5  : 8 points
+2025-09-28 16:18:46,627 - INFO - ------------------------------
+2025-09-28 16:18:47,632 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:47,633 - INFO - Killer line: 0 4
+2025-09-28 16:18:47,634 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:47,635 - INFO - Current Scores:
+2025-09-28 16:18:47,636 - INFO - Player 1  : 4 points
+2025-09-28 16:18:47,637 - INFO - Player 2  : 1 points
+2025-09-28 16:18:47,637 - INFO - Player 3  : 5 points
+2025-09-28 16:18:47,638 - INFO - Player 4  : 8 points
+2025-09-28 16:18:47,639 - INFO - Player 5  : 8 points
+2025-09-28 16:18:47,639 - INFO - ------------------------------
+2025-09-28 16:18:48,644 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:48,645 - INFO - Killer line: 1 4
+2025-09-28 16:18:48,647 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:48,647 - INFO - Current Scores:
+2025-09-28 16:18:48,648 - INFO - Player 1  : 4 points
+2025-09-28 16:18:48,648 - INFO - Player 2  : 1 points
+2025-09-28 16:18:48,649 - INFO - Player 3  : 5 points
+2025-09-28 16:18:48,649 - INFO - Player 4  : 9 points
+2025-09-28 16:18:48,650 - INFO - Player 5  : 8 points
+2025-09-28 16:18:48,651 - INFO - ------------------------------
+2025-09-28 16:18:49,655 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:49,656 - INFO - Killer line: 2 4
+2025-09-28 16:18:49,658 - INFO - All moves backward (-1)
+2025-09-28 16:18:49,659 - INFO - Current Scores:
+2025-09-28 16:18:49,659 - INFO - Player 1  : 3 points
+2025-09-28 16:18:49,660 - INFO - Player 2  : 1 points
+2025-09-28 16:18:49,661 - INFO - Player 3  : 4 points
+2025-09-28 16:18:49,661 - INFO - Player 4  : 8 points
+2025-09-28 16:18:49,662 - INFO - Player 5  : 7 points
+2025-09-28 16:18:49,663 - INFO - ------------------------------
+2025-09-28 16:18:50,669 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:50,671 - INFO - Killer line: 3 4
+2025-09-28 16:18:50,672 - INFO - Player 3   moves forward (+1)
+2025-09-28 16:18:50,673 - INFO - Current Scores:
+2025-09-28 16:18:50,674 - INFO - Player 1  : 3 points
+2025-09-28 16:18:50,674 - INFO - Player 2  : 1 points
+2025-09-28 16:18:50,675 - INFO - Player 3  : 5 points
+2025-09-28 16:18:50,676 - INFO - Player 4  : 8 points
+2025-09-28 16:18:50,676 - INFO - Player 5  : 7 points
+2025-09-28 16:18:50,677 - INFO - ------------------------------
+2025-09-28 16:18:51,681 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:51,682 - INFO - Killer line: 4 4
+2025-09-28 16:18:51,684 - INFO - Player 5   moves forward (+1)
+2025-09-28 16:18:51,684 - INFO - Current Scores:
+2025-09-28 16:18:51,685 - INFO - Player 1  : 3 points
+2025-09-28 16:18:51,686 - INFO - Player 2  : 1 points
+2025-09-28 16:18:51,687 - INFO - Player 3  : 5 points
+2025-09-28 16:18:51,687 - INFO - Player 4  : 8 points
+2025-09-28 16:18:51,688 - INFO - Player 5  : 8 points
+2025-09-28 16:18:51,689 - INFO - ------------------------------
+2025-09-28 16:18:52,693 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:52,694 - INFO - Killer line: 5 4
+2025-09-28 16:18:52,696 - INFO - All moves backward (-1)
+2025-09-28 16:18:52,696 - INFO - Current Scores:
+2025-09-28 16:18:52,697 - INFO - Player 1  : 2 points
+2025-09-28 16:18:52,698 - INFO - Player 2  : 1 points
+2025-09-28 16:18:52,698 - INFO - Player 3  : 4 points
+2025-09-28 16:18:52,699 - INFO - Player 4  : 7 points
+2025-09-28 16:18:52,700 - INFO - Player 5  : 7 points
+2025-09-28 16:18:52,700 - INFO - ------------------------------
+2025-09-28 16:18:53,707 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:53,708 - INFO - Killer line: 6 4
+2025-09-28 16:18:53,710 - INFO - All players move forward (+1)
+2025-09-28 16:18:53,710 - INFO - Current Scores:
+2025-09-28 16:18:53,711 - INFO - Player 1  : 3 points
+2025-09-28 16:18:53,712 - INFO - Player 2  : 1 points
+2025-09-28 16:18:53,712 - INFO - Player 3  : 5 points
+2025-09-28 16:18:53,713 - INFO - Player 4  : 8 points
+2025-09-28 16:18:53,714 - INFO - Player 5  : 8 points
+2025-09-28 16:18:53,714 - INFO - ------------------------------
+2025-09-28 16:18:54,718 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:54,719 - INFO - Killer line: 7 4
+2025-09-28 16:18:54,721 - INFO - Player 4   moves forward (+1)
+2025-09-28 16:18:54,721 - INFO - Current Scores:
+2025-09-28 16:18:54,722 - INFO - Player 1  : 3 points
+2025-09-28 16:18:54,723 - INFO - Player 2  : 1 points
+2025-09-28 16:18:54,724 - INFO - Player 3  : 5 points
+2025-09-28 16:18:54,724 - INFO - Player 4  : 9 points
+2025-09-28 16:18:54,725 - INFO - Player 5  : 8 points
+2025-09-28 16:18:54,726 - INFO - ------------------------------
+2025-09-28 16:18:55,730 - INFO - players: 5 win: 0 killed: 1
+2025-09-28 16:18:55,731 - INFO - Killer line: 0 5
+2025-09-28 16:18:55,733 - INFO - All players move forward (+1)
+2025-09-28 16:18:55,733 - INFO - Current Scores:
+2025-09-28 16:18:55,734 - INFO - Player 1  : 4 points
+2025-09-28 16:18:55,735 - INFO - Player 2  : 1 points
+2025-09-28 16:18:55,735 - INFO - Player 3  : 6 points
+2025-09-28 16:18:55,736 - INFO - Player 4  : 10 points
+2025-09-28 16:18:55,737 - INFO - Player 5  : 9 points
+2025-09-28 16:18:55,738 - INFO - ------------------------------
+2025-09-28 16:18:55,739 - INFO - 🏆 Player 4   wins the game! 1 🏆
+2025-09-28 16:18:56,745 - INFO - players: 5 win: 1 killed: 1
+2025-09-28 16:18:56,747 - INFO - <<< Game Over! >>>
+2025-09-28 16:18:56,748 - INFO - duration: 00:00:49
+2025-09-28 16:19:01,502 - INFO - Selected game mode: game type: WIN 1, kill type: Kill, winning score: 10
+2025-09-28 16:19:01,503 - INFO - Game Over!

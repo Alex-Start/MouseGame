@@ -1,0 +1,5 @@
+1. - create console app. to play 'WIN 1' and reuse logging class (with ChatGPT)
+2. - create GUI + refactoring
+3. - create 'WIN ALL', menu game GUI, refactoring
+4. - refactoring and add kill laser (cat with laser), add conf. values (count player, with/without laser)
+5. - refactoring, added fast cat, add conf. values (score, fast cat), timer, statistics

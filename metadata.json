@@ -1,0 +1,6 @@
+{
+  "name": "Mouse Game",
+  "description": "Fun arcade game where mice race to reach the target score while dodging laser lines and fast cats!",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
