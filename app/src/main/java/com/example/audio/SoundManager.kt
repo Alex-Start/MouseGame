@@ -86,6 +86,53 @@ class SoundManager {
         }
     }
 
+    fun playKeyPickup() {
+        if (isMuted) return
+        scope.launch {
+            val sampleRate = 22050
+            playTone(987.77, 45, sampleRate, volume = 0.35f, type = WaveType.SINE)
+            playTone(1318.51, 65, sampleRate, volume = 0.35f, type = WaveType.SINE)
+        }
+    }
+
+    fun playKeyEscape() {
+        if (isMuted) return
+        scope.launch {
+            val sampleRate = 22050
+            playTone(659.25, 40, sampleRate, volume = 0.35f, type = WaveType.SINE)
+            playTone(880.0, 40, sampleRate, volume = 0.35f, type = WaveType.SINE)
+            playTone(1174.66, 70, sampleRate, volume = 0.35f, type = WaveType.SINE)
+        }
+    }
+
+    fun playCheesePickup() {
+        if (isMuted) return
+        scope.launch {
+            val sampleRate = 22050
+            playTone(1046.50, 50, sampleRate, volume = 0.35f, type = WaveType.SINE)
+            playTone(1318.51, 50, sampleRate, volume = 0.35f, type = WaveType.SINE)
+            playTone(1567.98, 80, sampleRate, volume = 0.35f, type = WaveType.SINE)
+        }
+    }
+
+    fun playTrapSnap() {
+        if (isMuted) return
+        scope.launch {
+            val sampleRate = 22050
+            playTone(1200.0, 30, sampleRate, volume = 0.45f, type = WaveType.SAWTOOTH)
+            playTone(200.0, 90, sampleRate, volume = 0.45f, type = WaveType.SQUARE)
+        }
+    }
+
+    fun playCaged() {
+        if (isMuted) return
+        scope.launch {
+            val sampleRate = 22050
+            playTone(250.0, 50, sampleRate, volume = 0.4f, type = WaveType.SAWTOOTH)
+            playTone(180.0, 100, sampleRate, volume = 0.4f, type = WaveType.SAWTOOTH)
+        }
+    }
+
     private enum class WaveType { SINE, SQUARE, SAWTOOTH }
 
     private fun playTone(

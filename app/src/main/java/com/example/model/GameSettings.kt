@@ -8,12 +8,14 @@ enum class WinMode(val displayName: String) {
 enum class LaserMode(val displayName: String, val code: Int) {
     OFF("Off", 0),
     REFRESH("<<", 1),
-    KILL("Kill", 2);
+    KILL("Kill", 2),
+    KEY_CAGE("Key & Cage", 3);
 
     fun next(): LaserMode = when (this) {
         OFF -> REFRESH
         REFRESH -> KILL
-        KILL -> OFF
+        KILL -> KEY_CAGE
+        KEY_CAGE -> OFF
     }
 }
 
@@ -23,5 +25,9 @@ data class GameSettings(
     val winMode: WinMode = WinMode.WIN_1,
     val laserMode: LaserMode = LaserMode.OFF,
     val fastCat: Boolean = true,
-    val guesses: List<Int> = emptyList()
+    val guesses: List<Int> = emptyList(),
+    val hasCheese: Boolean = false,
+    val hasTrap: Boolean = false,
+    val sneakyCat: Boolean = false,
+    val dualCat: Boolean = false
 )

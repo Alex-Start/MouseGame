@@ -1,0 +1,44 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- Mouse Body -->
+    <path
+        android:fillColor="#9E9E9E"
+        android:pathData="M24,12 C16,12 10,18 10,26 C10,34 16,38 24,38 C32,38 38,34 38,26 C38,18 32,12 24,12 Z"/>
+    <!-- Left Ear Outer -->
+    <path
+        android:fillColor="#757575"
+        android:pathData="M13,14 C10,14 8,10 11,7 C14,4 18,7 16,12 Z"/>
+    <!-- Left Ear Inner -->
+    <path
+        android:fillColor="#F8BBD0"
+        android:pathData="M13,13 C11,13 10,10 12,8 C14,6 16,8 15,11 Z"/>
+    <!-- Right Ear Outer -->
+    <path
+        android:fillColor="#757575"
+        android:pathData="M35,14 C38,14 40,10 37,7 C34,4 30,7 32,12 Z"/>
+    <!-- Right Ear Inner -->
+    <path
+        android:fillColor="#F8BBD0"
+        android:pathData="M35,13 C37,13 38,10 36,8 C34,6 32,8 33,11 Z"/>
+    <!-- Eyes -->
+    <path
+        android:fillColor="#212121"
+        android:pathData="M18,22 A2,2 0 1,1 18,22.01 M30,22 A2,2 0 1,1 30,22.01"/>
+    <!-- Nose -->
+    <path
+        android:fillColor="#FF80AB"
+        android:pathData="M24,27 C22.5,27 22.5,29 24,29.5 C25.5,29 25.5,27 24,27 Z"/>
+    <!-- Whiskers -->
+    <path
+        android:strokeColor="#424242"
+        android:strokeWidth="1"
+        android:pathData="M14,26 L6,24 M14,28 L7,29 M34,26 L42,24 M34,28 L41,29"/>
+    <!-- Tail -->
+    <path
+        android:strokeColor="#F8BBD0"
+        android:strokeWidth="2.5"
+        android:pathData="M24,38 C24,44 18,44 14,42"/>
+</vector>

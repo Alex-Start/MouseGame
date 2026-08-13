@@ -20,7 +20,16 @@ data class PlayerUiState(
     val score: Int,
     val isAlive: Boolean,
     val winnerRank: Int?,
-    val predictedRank: Int? = null
+    val predictedRank: Int? = null,
+    val keyPosition: Int? = null,
+    val hasKey: Boolean = false,
+    val isKeyCollected: Boolean = false,
+    val isCaged: Boolean = false,
+    val cheesePosition: Int? = null,
+    val isCheeseCollected: Boolean = false,
+    val trapPosition: Int? = null,
+    val isTrapTriggered: Boolean = false,
+    val stunnedTurns: Int = 0
 )
 
 data class GameUiState(
@@ -28,10 +37,17 @@ data class GameUiState(
     val laserLineNumber: Int = 0,
     val laserLineTime: Int = 0,
     val laserLineTimeMax: Int = 10,
+    val laserLineNumber2: Int = 0,
+    val laserLineTime2: Int = 0,
+    val laserLineTimeMax2: Int = 10,
     val isGameOver: Boolean = false,
     val durationFormatted: String = "00:00:00",
     val winMode: WinMode = WinMode.WIN_1,
     val laserMode: LaserMode = LaserMode.OFF,
+    val hasCheese: Boolean = false,
+    val hasTrap: Boolean = false,
+    val sneakyCat: Boolean = false,
+    val dualCat: Boolean = false,
     val countWinners: Int = 0,
     val countKilled: Int = 0,
     val winningScore: Int = 10,
@@ -62,16 +78,32 @@ fun GameEngine.toUiState(isMuted: Boolean = false): GameUiState {
                 score = p.score,
                 isAlive = p.isAlive,
                 winnerRank = winnerList[p.id],
-                predictedRank = predRank
+                predictedRank = predRank,
+                keyPosition = p.keyPosition,
+                hasKey = p.hasKey,
+                isKeyCollected = p.isKeyCollected,
+                isCaged = p.isCaged,
+                cheesePosition = p.cheesePosition,
+                isCheeseCollected = p.isCheeseCollected,
+                trapPosition = p.trapPosition,
+                isTrapTriggered = p.isTrapTriggered,
+                stunnedTurns = p.stunnedTurns
             )
         },
         laserLineNumber = laserLineNumber,
         laserLineTime = laserLineTime,
         laserLineTimeMax = getEffectiveLaserTimeMax(),
+        laserLineNumber2 = laserLineNumber2,
+        laserLineTime2 = laserLineTime2,
+        laserLineTimeMax2 = getEffectiveLaserTimeMax2(),
         isGameOver = isGameOver,
         durationFormatted = formatDuration(),
         winMode = settings.winMode,
         laserMode = settings.laserMode,
+        hasCheese = settings.hasCheese,
+        hasTrap = settings.hasTrap,
+        sneakyCat = settings.sneakyCat,
+        dualCat = settings.dualCat,
         countWinners = countWinners(),
         countKilled = countKilled(),
         winningScore = settings.winningScore,
@@ -135,6 +167,12 @@ class GameViewModel : ViewModel() {
         soundManager.playSettingToggle()
     }
 
+    fun setLaserMode(mode: LaserMode) {
+        val current = _settings.value
+        _settings.value = current.copy(laserMode = mode)
+        soundManager.playSettingToggle()
+    }
+
     fun updateWinningScore(delta: Int) {
         val current = _settings.value
         val newScore = (current.winningScore + delta).coerceAtLeast(1)
@@ -145,6 +183,30 @@ class GameViewModel : ViewModel() {
     fun toggleFastCat() {
         val current = _settings.value
         _settings.value = current.copy(fastCat = !current.fastCat)
+        soundManager.playSettingToggle()
+    }
+
+    fun toggleCheese() {
+        val current = _settings.value
+        _settings.value = current.copy(hasCheese = !current.hasCheese)
+        soundManager.playSettingToggle()
+    }
+
+    fun toggleTrap() {
+        val current = _settings.value
+        _settings.value = current.copy(hasTrap = !current.hasTrap)
+        soundManager.playSettingToggle()
+    }
+
+    fun toggleSneakyCat() {
+        val current = _settings.value
+        _settings.value = current.copy(sneakyCat = !current.sneakyCat)
+        soundManager.playSettingToggle()
+    }
+
+    fun toggleDualCat() {
+        val current = _settings.value
+        _settings.value = current.copy(dualCat = !current.dualCat)
         soundManager.playSettingToggle()
     }
 
@@ -192,6 +254,9 @@ class GameViewModel : ViewModel() {
         gameLoopJob = viewModelScope.launch {
             var prevWinnersCount = 0
             var prevKilledCount = 0
+            var prevKeysCollected = 0
+            var prevCheeseCollected = 0
+            var prevTrapsTriggered = 0
 
             while (!engine.isGameOver) {
                 if (!isPaused) {
@@ -202,6 +267,24 @@ class GameViewModel : ViewModel() {
                         engine.playRound()
                         soundManager.playMove()
 
+                        val currentKeys = engine.players.count { it.isKeyCollected }
+                        if (currentKeys > prevKeysCollected) {
+                            soundManager.playKeyPickup()
+                            prevKeysCollected = currentKeys
+                        }
+
+                        val currentCheese = engine.players.count { it.isCheeseCollected }
+                        if (currentCheese > prevCheeseCollected) {
+                            soundManager.playCheesePickup()
+                            prevCheeseCollected = currentCheese
+                        }
+
+                        val currentTraps = engine.players.count { it.isTrapTriggered }
+                        if (currentTraps > prevTrapsTriggered) {
+                            soundManager.playTrapSnap()
+                            prevTrapsTriggered = currentTraps
+                        }
+
                         val newWinners = engine.countWinners()
                         if (newWinners > prevWinnersCount) {
                             soundManager.playVictory()
@@ -211,9 +294,21 @@ class GameViewModel : ViewModel() {
                         _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
                         delay(400)
 
+                        val playersBeforeLaser = engine.players.toList()
                         engine.applyLaserCheck()
                         val newKilled = engine.countKilled()
-                        if (newKilled > prevKilledCount) {
+
+                        if (engine.settings.laserMode == LaserMode.KEY_CAGE) {
+                            val newlyCaged = engine.players.count { it.isCaged } - playersBeforeLaser.count { it.isCaged }
+                            val escapedWithKey = playersBeforeLaser.count { it.hasKey } - engine.players.count { it.hasKey }
+                            if (newlyCaged > 0) {
+                                soundManager.playCaged()
+                            } else if (escapedWithKey > 0) {
+                                soundManager.playKeyEscape()
+                            } else if (engine.laserLineTime == engine.getEffectiveLaserTimeMax()) {
+                                soundManager.playLaserStrike()
+                            }
+                        } else if (newKilled > prevKilledCount) {
                             if (engine.settings.laserMode == LaserMode.KILL) {
                                 soundManager.playEliminated()
                             } else {
@@ -229,6 +324,18 @@ class GameViewModel : ViewModel() {
                     } else {
                         engine.playRound()
                         soundManager.playMove()
+
+                        val currentCheese = engine.players.count { it.isCheeseCollected }
+                        if (currentCheese > prevCheeseCollected) {
+                            soundManager.playCheesePickup()
+                            prevCheeseCollected = currentCheese
+                        }
+
+                        val currentTraps = engine.players.count { it.isTrapTriggered }
+                        if (currentTraps > prevTrapsTriggered) {
+                            soundManager.playTrapSnap()
+                            prevTrapsTriggered = currentTraps
+                        }
 
                         val newWinners = engine.countWinners()
                         if (newWinners > prevWinnersCount) {

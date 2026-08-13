@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -304,15 +305,40 @@ private fun PlayerRowTrack(
             }
 
             Column {
-                Text(
-                    text = "${player.name.trim()}: ${player.score}",
-                    color = if (player.isAlive) Color.White else Color.Gray,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp,
-                    textDecoration = if (!player.isAlive) TextDecoration.LineThrough else TextDecoration.None
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = "${player.name.trim()}: ${player.score}",
+                        color = if (player.isAlive && !player.isCaged) Color.White else Color.Gray,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                        textDecoration = if (!player.isAlive || player.isCaged) TextDecoration.LineThrough else TextDecoration.None
+                    )
+                    if (player.hasKey) {
+                        Text(
+                            text = "🔑",
+                            fontSize = 12.sp
+                        )
+                    }
+                }
 
-                if (player.predictedRank != null) {
+                if (player.isCaged) {
+                    Text(
+                        text = "🔒 Caged",
+                        color = Color(0xFFFFB74D),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                } else if (player.stunnedTurns > 0) {
+                    Text(
+                        text = "💫 Stunned",
+                        color = Color(0xFFFF7043),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                } else if (player.predictedRank != null) {
                     val isCorrect = player.winnerRank != null && player.winnerRank == player.predictedRank
                     val tagText = if (isCorrect) "🎯 #${player.predictedRank} ✅" else "🎯 Pred #${player.predictedRank}"
                     val tagColor = if (isCorrect) Color(0xFF81C784) else Color(0xFFFFB74D)
@@ -354,6 +380,57 @@ private fun PlayerRowTrack(
                 )
             }
 
+            // Key on Track (if not collected yet)
+            if (player.keyPosition != null && !player.isKeyCollected) {
+                val keyFraction = (player.keyPosition.toFloat() / winningScore.toFloat()).coerceIn(0f, 1f)
+                val keyOffset = (maxWidth - 36.dp) * keyFraction
+                Box(
+                    modifier = Modifier
+                        .offset(x = keyOffset)
+                        .size(24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "🔑",
+                        fontSize = 13.sp
+                    )
+                }
+            }
+
+            // Cheese on Track (if not collected yet)
+            if (player.cheesePosition != null && !player.isCheeseCollected) {
+                val cheeseFraction = (player.cheesePosition.toFloat() / winningScore.toFloat()).coerceIn(0f, 1f)
+                val cheeseOffset = (maxWidth - 36.dp) * cheeseFraction
+                Box(
+                    modifier = Modifier
+                        .offset(x = cheeseOffset)
+                        .size(24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "🧀",
+                        fontSize = 13.sp
+                    )
+                }
+            }
+
+            // Trap on Track (if not triggered yet)
+            if (player.trapPosition != null && !player.isTrapTriggered) {
+                val trapFraction = (player.trapPosition.toFloat() / winningScore.toFloat()).coerceIn(0f, 1f)
+                val trapOffset = (maxWidth - 36.dp) * trapFraction
+                Box(
+                    modifier = Modifier
+                        .offset(x = trapOffset)
+                        .size(24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "🪤",
+                        fontSize = 13.sp
+                    )
+                }
+            }
+
             // Finish Line Marker
             Box(
                 modifier = Modifier
@@ -363,7 +440,7 @@ private fun PlayerRowTrack(
                     .background(Color(0xFF66BB6A))
             )
 
-            // Animated Mouse Character Position
+            // Animated Mouse / Cage Position
             val totalTrackWidth = maxWidth - 36.dp
             val positionFraction = (player.score.toFloat() / winningScore.toFloat()).coerceIn(0f, 1f)
             val targetMouseOffset = totalTrackWidth * positionFraction
@@ -376,22 +453,56 @@ private fun PlayerRowTrack(
             Box(
                 modifier = Modifier.offset(x = animatedMouseOffset)
             ) {
-                if (player.isAlive) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_mouse),
-                        contentDescription = "Mouse",
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp, 20.dp)
-                            .background(Color.Red, RoundedCornerShape(4.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("💀", fontSize = 10.sp)
+                when {
+                    player.isCaged -> {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .border(2.dp, Color(0xFFFFB74D), RoundedCornerShape(8.dp))
+                                .background(Color(0x992E1C12), RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("🔒", fontSize = 14.sp)
+                        }
+                    }
+                    player.isAlive -> {
+                        Box {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_mouse),
+                                contentDescription = "Mouse",
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                            )
+                            if (player.hasKey) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .offset(x = 4.dp, y = (-4).dp)
+                                ) {
+                                    Text("🔑", fontSize = 10.sp)
+                                }
+                            }
+                            if (player.stunnedTurns > 0) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopStart)
+                                        .offset(x = (-4).dp, y = (-4).dp)
+                                ) {
+                                    Text("💫", fontSize = 10.sp)
+                                }
+                            }
+                        }
+                    }
+                    else -> {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp, 20.dp)
+                                .background(Color.Red, RoundedCornerShape(4.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("💀", fontSize = 10.sp)
+                        }
                     }
                 }
             }
@@ -442,7 +553,7 @@ private fun LaserCatRowTrack(
                 modifier = Modifier.size(20.dp)
             )
             Text(
-                text = "Laser Cat",
+                text = if (uiState.dualCat) "Dual Cats" else if (uiState.sneakyCat) "Sneaky Cat" else "Laser Cat",
                 color = Color(0xFFFF7043),
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
@@ -463,6 +574,7 @@ private fun LaserCatRowTrack(
                     .background(Color(0xFF3E2028), RoundedCornerShape(2.dp))
             )
 
+            // Cat 1 Indicator
             if (uiState.laserLineNumber > 0) {
                 val totalTrackWidth = maxWidth - 40.dp
                 val positionFraction = (uiState.laserLineNumber.toFloat() / uiState.winningScore.toFloat()).coerceIn(0f, 1f)
@@ -479,6 +591,7 @@ private fun LaserCatRowTrack(
                     if (uiState.laserLineTime < uiState.laserLineTimeMax) {
                         // Countdown state
                         val isWarning = uiState.laserLineTime == uiState.laserLineTimeMax - 1
+                        val displayText = if (uiState.sneakyCat) "❓" else "${uiState.laserLineTime}"
                         Box(
                             modifier = Modifier
                                 .size(28.dp)
@@ -487,10 +600,10 @@ private fun LaserCatRowTrack(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "${uiState.laserLineTime}",
+                                text = displayText,
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 13.sp
+                                fontSize = 12.sp
                             )
                         }
                     } else {
@@ -506,7 +619,62 @@ private fun LaserCatRowTrack(
                             )
                             Image(
                                 painter = painterResource(id = R.drawable.ic_cat),
-                                contentDescription = "Laser Cat",
+                                contentDescription = "Laser Cat 1",
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Cat 2 Indicator (Dual Cat)
+            if (uiState.dualCat && uiState.laserLineNumber2 > 0) {
+                val totalTrackWidth = maxWidth - 40.dp
+                val positionFraction2 = (uiState.laserLineNumber2.toFloat() / uiState.winningScore.toFloat()).coerceIn(0f, 1f)
+                val targetCatOffset2 = totalTrackWidth * positionFraction2
+                val animatedCatOffset2 by animateDpAsState(
+                    targetValue = targetCatOffset2,
+                    animationSpec = tween(durationMillis = 300),
+                    label = "CatOffset2"
+                )
+
+                Box(
+                    modifier = Modifier.offset(x = animatedCatOffset2)
+                ) {
+                    if (uiState.laserLineTime2 < uiState.laserLineTimeMax2) {
+                        // Countdown state for Cat 2
+                        val isWarning2 = uiState.laserLineTime2 == uiState.laserLineTimeMax2 - 1
+                        val displayText2 = if (uiState.sneakyCat) "❓" else "${uiState.laserLineTime2}"
+                        Box(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(CircleShape)
+                                .background(if (isWarning2) Color(0xFFFF9800) else Color(0xFF2E7D32)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = displayText2,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
+                        }
+                    } else {
+                        // Attack state for Cat 2 (Cyan Laser + Cat Image)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .width(4.dp)
+                                    .height(36.dp)
+                                    .background(Color(0xFF00E676))
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_cat),
+                                contentDescription = "Laser Cat 2",
                                 modifier = Modifier
                                     .size(36.dp)
                                     .clip(CircleShape)

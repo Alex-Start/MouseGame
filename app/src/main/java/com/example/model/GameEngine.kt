@@ -5,7 +5,25 @@ import kotlin.math.min
 
 class GameEngine(val settings: GameSettings) {
     var players: List<Player> = List(settings.playerCount) { i ->
-        Player(id = i + 1, name = "Player ${i + 1}")
+        val keyPos = if (settings.laserMode == LaserMode.KEY_CAGE) {
+            (1 until settings.winningScore).random()
+        } else null
+        val cheesePos = if (settings.hasCheese) {
+            val possible = (1 until settings.winningScore).filter { it != keyPos }
+            if (possible.isNotEmpty()) possible.random() else (1 until settings.winningScore).random()
+        } else null
+        val trapPos = if (settings.hasTrap) {
+            val possible = (1 until settings.winningScore).filter { it != keyPos && it != cheesePos }
+            if (possible.isNotEmpty()) possible.random() else (1 until settings.winningScore).random()
+        } else null
+
+        Player(
+            id = i + 1,
+            name = "Player ${i + 1}",
+            keyPosition = keyPos,
+            cheesePosition = cheesePos,
+            trapPosition = trapPos
+        )
     }
         private set
 
@@ -17,6 +35,12 @@ class GameEngine(val settings: GameSettings) {
     var laserLineTime: Int = 0
         private set
     val killerLineTimeMax: Int = 10
+
+    // Dual Cat fields
+    var laserLineNumber2: Int = if (settings.dualCat) (settings.winningScore / 2).coerceAtLeast(1) else 0
+        private set
+    var laserLineTime2: Int = 0
+        private set
 
     var isGameOver: Boolean = false
         private set
@@ -36,12 +60,17 @@ class GameEngine(val settings: GameSettings) {
         }
     }
 
+    fun getEffectiveLaserTimeMax2(): Int {
+        val base = getEffectiveLaserTimeMax()
+        return (base - 1).coerceAtLeast(4)
+    }
+
     fun playRound() {
         if (isGameOver) return
 
         updateDuration()
 
-        val alivePlayersToMove = players.filter { it.isAlive && it.score < settings.winningScore && !winners.containsKey(it.id) }
+        val alivePlayersToMove = players.filter { it.isAlive && !it.isCaged && it.score < settings.winningScore && !winners.containsKey(it.id) }
         if (alivePlayersToMove.isNotEmpty()) {
             val choices = mutableListOf<String>()
             repeat(players.size) { choices.add("one+1") }
@@ -71,6 +100,7 @@ class GameEngine(val settings: GameSettings) {
 
         updateDuration()
 
+        // Cat 1
         laserLineTime++
         if (laserLineTime > getEffectiveLaserTimeMax()) {
             laserLineNumber++
@@ -79,18 +109,46 @@ class GameEngine(val settings: GameSettings) {
             }
             laserLineTime = 0
         }
+
+        // Cat 2 (Dual Cat)
+        if (settings.dualCat) {
+            laserLineTime2++
+            if (laserLineTime2 > getEffectiveLaserTimeMax2()) {
+                laserLineNumber2++
+                if (laserLineNumber2 >= settings.winningScore) {
+                    laserLineNumber2 = 1
+                }
+                laserLineTime2 = 0
+            }
+        }
     }
 
     fun applyLaserCheck() {
         if (isGameOver) return
-        if (laserLineTime != getEffectiveLaserTimeMax()) return
-        if (laserLineNumber == 0) return
+        if (settings.laserMode == LaserMode.OFF) return
+
+        val cat1Strike = laserLineTime == getEffectiveLaserTimeMax() && laserLineNumber > 0
+        val cat2Strike = settings.dualCat && laserLineTime2 == getEffectiveLaserTimeMax2() && laserLineNumber2 > 0
+
+        if (!cat1Strike && !cat2Strike) return
 
         players = players.map { player ->
-            if (player.isAlive && player.score == laserLineNumber) {
+            val hitByCat1 = cat1Strike && player.score == laserLineNumber
+            val hitByCat2 = cat2Strike && player.score == laserLineNumber2
+
+            if (player.isAlive && !player.isCaged && (hitByCat1 || hitByCat2)) {
                 when (settings.laserMode) {
                     LaserMode.REFRESH -> player.copy(score = 0)
                     LaserMode.KILL -> player.copy(isAlive = false)
+                    LaserMode.KEY_CAGE -> {
+                        if (player.hasKey) {
+                            // Free on start position, key consumed
+                            player.copy(score = 0, hasKey = false)
+                        } else {
+                            // In cage on start position
+                            player.copy(score = 0, isCaged = true, isAlive = false)
+                        }
+                    }
                     LaserMode.OFF -> player
                 }
             } else {
@@ -104,9 +162,51 @@ class GameEngine(val settings: GameSettings) {
     private fun updatePlayerScore(playerId: Int, delta: Int) {
         if (winners.containsKey(playerId)) return
         players = players.map { p ->
-            if (p.id == playerId && p.isAlive) {
-                val newScore = (p.score + delta).coerceAtLeast(0)
-                p.copy(score = newScore)
+            if (p.id == playerId && p.isAlive && !p.isCaged) {
+                if (p.stunnedTurns > 0) {
+                    // Player is stunned by trap!
+                    p.copy(stunnedTurns = p.stunnedTurns - 1)
+                } else {
+                    var newScore = (p.score + delta).coerceAtLeast(0)
+                    var pKey = p.hasKey
+                    var pKeyCollected = p.isKeyCollected
+                    var pCheeseCollected = p.isCheeseCollected
+                    var pTrapTriggered = p.isTrapTriggered
+                    var pStunned = p.stunnedTurns
+
+                    // Key Check
+                    if (settings.laserMode == LaserMode.KEY_CAGE && p.keyPosition != null && !pKeyCollected) {
+                        if (newScore >= p.keyPosition) {
+                            pKey = true
+                            pKeyCollected = true
+                        }
+                    }
+
+                    // Cheese Check (+2 Speed Boost)
+                    if (settings.hasCheese && p.cheesePosition != null && !pCheeseCollected) {
+                        if (newScore >= p.cheesePosition) {
+                            pCheeseCollected = true
+                            newScore = min(settings.winningScore, newScore + 2)
+                        }
+                    }
+
+                    // Trap Check (Stunned 1 turn)
+                    if (settings.hasTrap && p.trapPosition != null && !pTrapTriggered) {
+                        if (newScore == p.trapPosition) {
+                            pTrapTriggered = true
+                            pStunned = 1
+                        }
+                    }
+
+                    p.copy(
+                        score = newScore,
+                        hasKey = pKey,
+                        isKeyCollected = pKeyCollected,
+                        isCheeseCollected = pCheeseCollected,
+                        isTrapTriggered = pTrapTriggered,
+                        stunnedTurns = pStunned
+                    )
+                }
             } else {
                 p
             }
@@ -127,7 +227,7 @@ class GameEngine(val settings: GameSettings) {
     }
 
     fun countWinners(): Int = winners.size
-    fun countKilled(): Int = players.count { !it.isAlive }
+    fun countKilled(): Int = players.count { !it.isAlive || it.isCaged }
 
     private fun checkGameOver() {
         val total = players.size
@@ -136,14 +236,14 @@ class GameEngine(val settings: GameSettings) {
 
         isGameOver = when (settings.winMode) {
             WinMode.WIN_1 -> {
-                if (settings.laserMode == LaserMode.KILL) {
+                if (settings.laserMode == LaserMode.KILL || settings.laserMode == LaserMode.KEY_CAGE) {
                     wCount > 0 || kCount == total
                 } else {
                     wCount > 0
                 }
             }
             WinMode.WIN_ALL -> {
-                if (settings.laserMode == LaserMode.KILL) {
+                if (settings.laserMode == LaserMode.KILL || settings.laserMode == LaserMode.KEY_CAGE) {
                     wCount + kCount == total
                 } else {
                     wCount == total
