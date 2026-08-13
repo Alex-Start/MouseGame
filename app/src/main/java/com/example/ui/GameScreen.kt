@@ -16,7 +16,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,12 +38,14 @@ import com.example.R
 @Composable
 fun GameScreen(
     uiState: GameUiState,
+    onRecordMatch: (com.example.model.MatchRecord) -> Unit = {},
     onReturnToMenu: () -> Unit,
     onRestartGame: () -> Unit,
     onToggleMute: () -> Unit = {}
 ) {
     val horizontalScrollState = rememberScrollState()
     val verticalScrollState = rememberScrollState()
+    var hasRecordedHistory by remember { mutableStateOf(false) }
 
     val totalScoreSteps = uiState.winningScore
     val trackWidthDp = (totalScoreSteps * 40 + 220).dp
@@ -146,7 +152,7 @@ fun GameScreen(
         // Game Winner Banner
         if (uiState.countWinners > 0 && uiState.winnerNames.isNotEmpty()) {
             Surface(
-                color = Color(0xFFD32F2F),
+                color = Color(0xFF262633),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
@@ -157,22 +163,109 @@ fun GameScreen(
                 ) {
                     Text(
                         text = "🏆 WINNER: ${uiState.winnerNames}! 🏆",
-                        color = Color.White,
+                        color = Color(0xFFFFD700),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        fontSize = 15.sp
                     )
 
                     if (uiState.guesses.isNotEmpty()) {
                         val correctGuesses = uiState.players.count { p ->
-                            p.predictedRank != null && p.winnerRank != null && p.winnerRank == p.predictedRank
+                            p.isAlive && !p.isCaged && p.predictedRank != null && p.winnerRank != null && p.winnerRank == p.predictedRank
                         }
-                        Text(
-                            text = "🎯 Predictions: $correctGuesses / ${uiState.guesses.size} Correct!",
-                            color = Color(0xFFFFD700),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp,
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
+
+                        val canEvaluateBet = uiState.isGameOver || uiState.countWinners > 0
+
+                        if (canEvaluateBet) {
+                            val predictedWinnerId = uiState.guesses.firstOrNull()
+                            val isWinnerBetWon = predictedWinnerId != null &&
+                                uiState.players.any { p -> p.id == predictedWinnerId && p.isAlive && !p.isCaged && p.winnerRank == 1 }
+
+                            val hasAnyMatch = uiState.players.any { p ->
+                                p.isAlive && !p.isCaged && p.predictedRank != null && p.winnerRank != null && p.winnerRank == p.predictedRank
+                            }
+
+                            val predictedPlayers = uiState.players.filter { it.predictedRank != null }
+                            val isExactOrderWon = predictedPlayers.isNotEmpty() &&
+                                predictedPlayers.all { p -> p.isAlive && !p.isCaged && p.winnerRank != null && p.winnerRank == p.predictedRank }
+
+                            val isBetWon = when (uiState.betType) {
+                                com.example.model.BetType.WINNER_ONLY -> isWinnerBetWon
+                                com.example.model.BetType.ANY_POSITION -> hasAnyMatch
+                                com.example.model.BetType.EXACT_ORDER -> isExactOrderWon
+                            }
+
+                            val payout = if (isBetWon) uiState.betAmount * uiState.betType.multiplier else -uiState.betAmount
+                            val payoutText = if (payout >= 0) "💰 Bet Won: +$payout Pts!" else "💸 Bet Lost: -${uiState.betAmount} Pts"
+                            val payoutColor = if (payout >= 0) Color(0xFF00E676) else Color(0xFFFF7043)
+
+                            LaunchedEffect(canEvaluateBet) {
+                                if (!hasRecordedHistory) {
+                                    hasRecordedHistory = true
+                                    val timeStr = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
+
+                                    val laserStr = if (uiState.laserMode != com.example.model.LaserMode.OFF) "⚡ Laser: ${uiState.laserMode.displayName}" else "⚡ No Laser"
+
+                                    val extrasList = mutableListOf<String>()
+                                    if (uiState.hasCheese) extrasList.add("🧀 Cheese")
+                                    if (uiState.hasTrap) extrasList.add("🪤 Trap")
+                                    if (uiState.sneakyCat) extrasList.add("🐱 Sneaky Cat")
+                                    if (uiState.dualCat) extrasList.add("🐱🐱 Dual Cat")
+                                    val extrasStr = if (extrasList.isNotEmpty()) " • " + extrasList.joinToString(", ") else ""
+
+                                    val betStr = "🎲 Bet: ${uiState.betType.displayName} (${uiState.betAmount} pts)"
+
+                                    val modeStr = "${uiState.players.size} Players • ${uiState.winMode.displayName} • $laserStr$extrasStr • $betStr"
+
+                                    val predStr = uiState.players.filter { it.predictedRank != null }
+                                        .sortedBy { it.predictedRank }
+                                        .joinToString(", ") { "P${it.id}: #${it.predictedRank}" }
+
+                                    val actualStr = uiState.players
+                                        .sortedWith(compareBy<PlayerUiState> { if (!it.isAlive || it.isCaged) 999 else (it.winnerRank ?: 900) }.thenBy { it.id })
+                                        .joinToString(", ") { p ->
+                                            if (!p.isAlive) "P${p.id}: K.O."
+                                            else if (p.isCaged) "P${p.id}: Caged"
+                                            else "P${p.id}: #${p.winnerRank ?: "-"}"
+                                        }
+
+                                    onRecordMatch(
+                                        com.example.model.MatchRecord(
+                                            timestamp = timeStr,
+                                            modeSummary = modeStr,
+                                            predictionsSummary = if (predStr.isEmpty()) "None" else predStr,
+                                            winnersSummary = if (actualStr.isEmpty()) "None" else actualStr,
+                                            pointsEarned = payout
+                                        )
+                                    )
+                                }
+                            }
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(top = 4.dp)
+                            ) {
+                                Text(
+                                    text = "🎯 Predictions: $correctGuesses / ${uiState.guesses.size} Correct!",
+                                    color = Color(0xFFFFD700),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 13.sp
+                                )
+                                Text(
+                                    text = payoutText,
+                                    color = payoutColor,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 14.sp
+                                )
+                            }
+                        } else {
+                            Text(
+                                text = "⏳ Race in Progress... ($correctGuesses Correct So Far)",
+                                color = Color(0xFF81D4FA),
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
                     }
                 }
             }

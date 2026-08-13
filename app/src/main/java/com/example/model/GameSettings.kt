@@ -19,6 +19,21 @@ enum class LaserMode(val displayName: String, val code: Int) {
     }
 }
 
+enum class BetType(val displayName: String, val multiplier: Int) {
+    ANY_POSITION("Any Match (2x)", 2),
+    WINNER_ONLY("Winner (3x)", 3),
+    EXACT_ORDER("Exact Order (5x)", 5)
+}
+
+data class MatchRecord(
+    val id: Long = System.currentTimeMillis(),
+    val timestamp: String,
+    val modeSummary: String,
+    val predictionsSummary: String,
+    val winnersSummary: String,
+    val pointsEarned: Int
+)
+
 data class GameSettings(
     val playerCount: Int = 4,
     val winningScore: Int = 10,
@@ -29,5 +44,8 @@ data class GameSettings(
     val hasCheese: Boolean = false,
     val hasTrap: Boolean = false,
     val sneakyCat: Boolean = false,
-    val dualCat: Boolean = false
+    val dualCat: Boolean = false,
+    val betAmount: Int = 50,
+    val betType: BetType = BetType.EXACT_ORDER
 )
+

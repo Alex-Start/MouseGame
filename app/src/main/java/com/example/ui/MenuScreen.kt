@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.model.GameSettings
 import com.example.model.LaserMode
 import com.example.model.WinMode
@@ -28,6 +29,8 @@ import com.example.model.WinMode
 @Composable
 fun MenuScreen(
     settings: GameSettings,
+    matchHistory: List<com.example.model.MatchRecord> = emptyList(),
+    onClearHistory: () -> Unit = {},
     onPlayerCountChange: (Int) -> Unit,
     onLaserModeToggle: () -> Unit,
     onSelectLaserMode: (LaserMode) -> Unit = {},
@@ -37,9 +40,176 @@ fun MenuScreen(
     onTrapToggle: () -> Unit = {},
     onSneakyCatToggle: () -> Unit = {},
     onDualCatToggle: () -> Unit = {},
+    onBetAmountChange: (Int) -> Unit = {},
+    onBetTypeChange: (com.example.model.BetType) -> Unit = {},
     onToggleGuess: (Int) -> Unit = {},
     onStartGame: (WinMode) -> Unit
 ) {
+    var showHistoryDialog by remember { mutableStateOf(false) }
+
+    if (showHistoryDialog) {
+        Dialog(onDismissRequest = { showHistoryDialog = false }) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color(0xFF1E1E28),
+                border = BorderStroke(1.dp, Color(0xFFFFD700).copy(alpha = 0.5f)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(text = "📊", fontSize = 20.sp)
+                            Text(
+                                text = "Score & Match History",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        }
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (matchHistory.isNotEmpty()) {
+                                IconButton(
+                                    onClick = onClearHistory,
+                                    modifier = Modifier.size(28.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Default.Delete,
+                                        contentDescription = "Clear History",
+                                        tint = Color(0xFFFF7043),
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+                            }
+                            IconButton(
+                                onClick = { showHistoryDialog = false },
+                                modifier = Modifier.size(28.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Close,
+                                    contentDescription = "Close",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    HorizontalDivider(color = Color(0xFF353545))
+
+                    if (matchHistory.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 24.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "No match history recorded yet.\nPredict finish order and complete a game!",
+                                color = Color.Gray,
+                                fontSize = 12.sp,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                        }
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 360.dp)
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            matchHistory.forEach { record ->
+                                Surface(
+                                    shape = RoundedCornerShape(8.dp),
+                                    color = Color(0xFF262636),
+                                    border = BorderStroke(1.dp, Color(0xFF3A3A4C)),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(10.dp)
+                                            .fillMaxWidth(),
+                                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        // Header Row: Timestamp + Earned Points
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "📅 ${record.timestamp}",
+                                                color = Color.LightGray,
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                            val isWin = record.pointsEarned >= 0
+                                            val pointsStr = if (isWin) "+${record.pointsEarned}" else "${record.pointsEarned}"
+                                            Surface(
+                                                shape = RoundedCornerShape(6.dp),
+                                                color = if (isWin) Color(0xFF00E676).copy(alpha = 0.2f) else Color(0xFFFF7043).copy(alpha = 0.2f),
+                                                border = BorderStroke(1.dp, if (isWin) Color(0xFF00E676) else Color(0xFFFF7043))
+                                            ) {
+                                                Text(
+                                                    text = "$pointsStr Pts",
+                                                    color = if (isWin) Color(0xFF00E676) else Color(0xFFFF7043),
+                                                    fontSize = 11.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                                                )
+                                            }
+                                        }
+
+                                        // Mode Details (Cheese, Trap, Laser Type, Bet Odds)
+                                        Text(
+                                            text = "⚙️ ${record.modeSummary}",
+                                            color = Color.White,
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Normal
+                                        )
+
+                                        // Prediction vs Actual Winners
+                                        Text(
+                                            text = "🎯 Predicted: ${record.predictionsSummary}  →  🏁 Result: ${record.winnersSummary}",
+                                            color = Color(0xFFFFD700),
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Button(
+                        onClick = { showHistoryDialog = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("close_history_dialog"),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF353545))
+                    ) {
+                        Text("Close History", color = Color.White, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -49,6 +219,7 @@ fun MenuScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth(0.95f)
+                .fillMaxHeight(0.92f)
                 .padding(vertical = 8.dp),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E28)),
@@ -56,11 +227,9 @@ fun MenuScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 14.dp)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                    .padding(16.dp)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Header
                 Row(
@@ -77,7 +246,17 @@ fun MenuScreen(
                     Text(text = "🐱", fontSize = 24.sp)
                 }
 
-                HorizontalDivider(color = Color(0xFF2E2E3E))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = Color(0xFF2E2E3E))
+
+                // Scrollable Settings Content
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
 
                 // Core Match Settings (Numeric Steppers in individual rows)
                 Column(
@@ -247,6 +426,159 @@ fun MenuScreen(
 
                 HorizontalDivider(color = Color(0xFF2E2E3E))
 
+                // 🎲 Betting Points & Wager Odds System
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(text = "🎲", fontSize = 16.sp)
+                            Text(
+                                text = "Betting System (Active on Prediction)",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+
+                    // Betting Wager Stake Chips
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = "Bet Stake:",
+                            color = Color.Gray,
+                            fontSize = 11.sp,
+                            modifier = Modifier.width(52.dp)
+                        )
+                        listOf(10, 25, 50, 100).forEach { amount ->
+                            val isSelected = settings.betAmount == amount
+                            Surface(
+                                onClick = { onBetAmountChange(amount) },
+                                shape = RoundedCornerShape(8.dp),
+                                color = if (isSelected) Color(0xFFFFB74D).copy(alpha = 0.25f) else Color(0xFF22222E),
+                                border = BorderStroke(1.dp, if (isSelected) Color(0xFFFFB74D) else Color(0xFF353545)),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Box(
+                                    modifier = Modifier.padding(vertical = 6.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "$amount Pts",
+                                        color = if (isSelected) Color.White else Color.Gray,
+                                        fontSize = 11.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // Bet Type Rule
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = "Bet Odds:",
+                            color = Color.Gray,
+                            fontSize = 11.sp,
+                            modifier = Modifier.width(52.dp)
+                        )
+                        com.example.model.BetType.values().forEach { betType ->
+                            val isSelected = settings.betType == betType
+                            Surface(
+                                onClick = { onBetTypeChange(betType) },
+                                shape = RoundedCornerShape(8.dp),
+                                color = if (isSelected) Color(0xFF81D4FA).copy(alpha = 0.25f) else Color(0xFF22222E),
+                                border = BorderStroke(1.dp, if (isSelected) Color(0xFF81D4FA) else Color(0xFF353545)),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Box(
+                                    modifier = Modifier.padding(vertical = 6.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = betType.displayName,
+                                        color = if (isSelected) Color.White else Color.Gray,
+                                        fontSize = 10.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                HorizontalDivider(color = Color(0xFF2E2E3E))
+
+                // 📊 Score & Match History Button Card
+                Surface(
+                    onClick = { showHistoryDialog = true },
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color(0xFF262636),
+                    border = BorderStroke(1.dp, Color(0xFFFFD700).copy(alpha = 0.5f)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("open_history_button")
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 14.dp, vertical = 10.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text(text = "📊", fontSize = 20.sp)
+                            Column {
+                                Text(
+                                    text = "Score & Match History",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 13.sp
+                                )
+                                Text(
+                                    text = if (matchHistory.isEmpty()) "No matches played yet" else "${matchHistory.size} match records saved",
+                                    color = Color.LightGray,
+                                    fontSize = 11.sp
+                                )
+                            }
+                        }
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color(0xFFFFD700).copy(alpha = 0.2f),
+                            border = BorderStroke(1.dp, Color(0xFFFFD700))
+                        ) {
+                            Text(
+                                text = "VIEW 📊",
+                                color = Color(0xFFFFD700),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 11.sp,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(color = Color(0xFF2E2E3E))
+
                 // Predict Finish Order Section
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -332,10 +664,11 @@ fun MenuScreen(
                         }
                     }
                 }
+            }
 
-                HorizontalDivider(color = Color(0xFF2E2E3E))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = Color(0xFF2E2E3E))
 
-                // Start Game Buttons (Side by Side in 1 line)
+                // Start Game Buttons (Fixed at Bottom)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)

@@ -6,6 +6,7 @@ import com.example.audio.SoundManager
 import com.example.model.GameEngine
 import com.example.model.GameSettings
 import com.example.model.LaserMode
+import com.example.model.Player
 import com.example.model.WinMode
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -54,11 +55,26 @@ data class GameUiState(
     val winnerNames: String = "",
     val isMuted: Boolean = false,
     val guesses: List<Int> = emptyList(),
+    val betAmount: Int = 50,
+    val betType: com.example.model.BetType = com.example.model.BetType.EXACT_ORDER,
     val tick: Long = 0L
 )
 
 fun GameEngine.toUiState(isMuted: Boolean = false): GameUiState {
     val winnerList = winners.toMap()
+
+    // Calculate complete rank map for ALL players who finished or are alive
+    val nextRankStart = (winnerList.values.maxOrNull() ?: 0) + 1
+    val unrankedAlivePlayers = players.filter { !winnerList.containsKey(it.id) && it.isAlive && !it.isCaged }
+    val sortedUnrankedAlive = unrankedAlivePlayers.sortedWith(
+        compareByDescending<Player> { it.score }
+            .thenBy { it.id }
+    )
+    val fullRankMap = winnerList.toMutableMap()
+    sortedUnrankedAlive.forEachIndexed { index, player ->
+        fullRankMap[player.id] = nextRankStart + index
+    }
+
     val winnerNamesStr = if (countWinners() > 0) {
         players
             .filter { winnerList.containsKey(it.id) }
@@ -77,7 +93,7 @@ fun GameEngine.toUiState(isMuted: Boolean = false): GameUiState {
                 name = p.name,
                 score = p.score,
                 isAlive = p.isAlive,
-                winnerRank = winnerList[p.id],
+                winnerRank = fullRankMap[p.id],
                 predictedRank = predRank,
                 keyPosition = p.keyPosition,
                 hasKey = p.hasKey,
@@ -110,6 +126,8 @@ fun GameEngine.toUiState(isMuted: Boolean = false): GameUiState {
         winnerNames = winnerNamesStr,
         isMuted = isMuted,
         guesses = guessList,
+        betAmount = settings.betAmount,
+        betType = settings.betType,
         tick = System.currentTimeMillis()
     )
 }
@@ -124,6 +142,17 @@ class GameViewModel : ViewModel() {
     private val _settings = MutableStateFlow(GameSettings())
     val settings: StateFlow<GameSettings> = _settings.asStateFlow()
 
+    private val _matchHistory = MutableStateFlow<List<com.example.model.MatchRecord>>(emptyList())
+    val matchHistory: StateFlow<List<com.example.model.MatchRecord>> = _matchHistory.asStateFlow()
+
+    fun addMatchRecord(record: com.example.model.MatchRecord) {
+        _matchHistory.value = listOf(record) + _matchHistory.value
+    }
+
+    fun clearMatchHistory() {
+        _matchHistory.value = emptyList()
+        soundManager.playButtonClick()
+    }
     private val _gameState = MutableStateFlow<GameState>(GameState.Menu)
     val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
@@ -210,6 +239,18 @@ class GameViewModel : ViewModel() {
         soundManager.playSettingToggle()
     }
 
+    fun setBetAmount(amount: Int) {
+        val current = _settings.value
+        _settings.value = current.copy(betAmount = amount)
+        soundManager.playSettingToggle()
+    }
+
+    fun setBetType(betType: com.example.model.BetType) {
+        val current = _settings.value
+        _settings.value = current.copy(betType = betType)
+        soundManager.playSettingToggle()
+    }
+
     fun setWinMode(winMode: WinMode) {
         val current = _settings.value
         _settings.value = current.copy(winMode = winMode)
@@ -252,6 +293,7 @@ class GameViewModel : ViewModel() {
     private fun startLoop(engine: GameEngine) {
         gameLoopJob?.cancel()
         gameLoopJob = viewModelScope.launch {
+            delay(1000)
             var prevWinnersCount = 0
             var prevKilledCount = 0
             var prevKeysCollected = 0

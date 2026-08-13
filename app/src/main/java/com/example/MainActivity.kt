@@ -39,11 +39,14 @@ class MainActivity : ComponentActivity() {
 fun MouseGameApp(viewModel: GameViewModel = viewModel()) {
     val settings by viewModel.settings.collectAsState()
     val gameState by viewModel.gameState.collectAsState()
+    val matchHistory by viewModel.matchHistory.collectAsState()
 
     when (val state = gameState) {
         is GameState.Menu -> {
             MenuScreen(
                 settings = settings,
+                matchHistory = matchHistory,
+                onClearHistory = viewModel::clearMatchHistory,
                 onPlayerCountChange = viewModel::updatePlayerCount,
                 onLaserModeToggle = viewModel::toggleLaserMode,
                 onSelectLaserMode = viewModel::setLaserMode,
@@ -53,6 +56,8 @@ fun MouseGameApp(viewModel: GameViewModel = viewModel()) {
                 onTrapToggle = viewModel::toggleTrap,
                 onSneakyCatToggle = viewModel::toggleSneakyCat,
                 onDualCatToggle = viewModel::toggleDualCat,
+                onBetAmountChange = viewModel::setBetAmount,
+                onBetTypeChange = viewModel::setBetType,
                 onToggleGuess = viewModel::toggleGuess,
                 onStartGame = viewModel::startGame
             )
@@ -60,6 +65,7 @@ fun MouseGameApp(viewModel: GameViewModel = viewModel()) {
         is GameState.Playing -> {
             GameScreen(
                 uiState = state.uiState,
+                onRecordMatch = viewModel::addMatchRecord,
                 onReturnToMenu = viewModel::returnToMenu,
                 onRestartGame = viewModel::restartGame,
                 onToggleMute = viewModel::toggleMute

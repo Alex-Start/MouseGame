@@ -6,15 +6,16 @@ import kotlin.math.min
 class GameEngine(val settings: GameSettings) {
     var players: List<Player> = List(settings.playerCount) { i ->
         val keyPos = if (settings.laserMode == LaserMode.KEY_CAGE) {
-            (1 until settings.winningScore).random()
+            val possible = (2 until settings.winningScore)
+            if (possible.count() > 0) possible.random() else 2
         } else null
         val cheesePos = if (settings.hasCheese) {
-            val possible = (1 until settings.winningScore).filter { it != keyPos }
-            if (possible.isNotEmpty()) possible.random() else (1 until settings.winningScore).random()
+            val possible = (2 until settings.winningScore).filter { it != keyPos }
+            if (possible.isNotEmpty()) possible.random() else 2
         } else null
         val trapPos = if (settings.hasTrap) {
-            val possible = (1 until settings.winningScore).filter { it != keyPos && it != cheesePos }
-            if (possible.isNotEmpty()) possible.random() else (1 until settings.winningScore).random()
+            val possible = (2 until settings.winningScore).filter { it != keyPos && it != cheesePos }
+            if (possible.isNotEmpty()) possible.random() else 2
         } else null
 
         Player(
