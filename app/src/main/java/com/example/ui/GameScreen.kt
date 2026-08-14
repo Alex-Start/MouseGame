@@ -47,6 +47,12 @@ fun GameScreen(
     val verticalScrollState = rememberScrollState()
     var hasRecordedHistory by remember { mutableStateOf(false) }
 
+    LaunchedEffect(uiState.isGameOver) {
+        if (!uiState.isGameOver) {
+            hasRecordedHistory = false
+        }
+    }
+
     val totalScoreSteps = uiState.winningScore
     val trackWidthDp = (totalScoreSteps * 40 + 220).dp
 
@@ -173,7 +179,7 @@ fun GameScreen(
                             p.isAlive && !p.isCaged && p.predictedRank != null && p.winnerRank != null && p.winnerRank == p.predictedRank
                         }
 
-                        val canEvaluateBet = uiState.isGameOver || uiState.countWinners > 0
+                        val canEvaluateBet = uiState.isGameOver
 
                         if (canEvaluateBet) {
                             val predictedWinnerId = uiState.guesses.firstOrNull()

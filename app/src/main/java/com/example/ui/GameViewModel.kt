@@ -1,8 +1,11 @@
 package com.example.ui
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.audio.SoundManager
+import com.example.data.AppDatabase
+import com.example.data.MatchRecordEntity
 import com.example.model.GameEngine
 import com.example.model.GameSettings
 import com.example.model.LaserMode
@@ -11,8 +14,11 @@ import com.example.model.WinMode
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 data class PlayerUiState(
@@ -137,20 +143,31 @@ sealed class GameState {
     data class Playing(val uiState: GameUiState) : GameState()
 }
 
-class GameViewModel : ViewModel() {
+class GameViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val matchRecordDao = AppDatabase.getDatabase(application).matchRecordDao()
 
     private val _settings = MutableStateFlow(GameSettings())
     val settings: StateFlow<GameSettings> = _settings.asStateFlow()
 
-    private val _matchHistory = MutableStateFlow<List<com.example.model.MatchRecord>>(emptyList())
-    val matchHistory: StateFlow<List<com.example.model.MatchRecord>> = _matchHistory.asStateFlow()
+    val matchHistory: StateFlow<List<com.example.model.MatchRecord>> = matchRecordDao.getAllRecords()
+        .map { entities -> entities.map { it.toModel() } }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     fun addMatchRecord(record: com.example.model.MatchRecord) {
-        _matchHistory.value = listOf(record) + _matchHistory.value
+        viewModelScope.launch {
+            matchRecordDao.insertRecord(MatchRecordEntity.fromModel(record))
+        }
     }
 
     fun clearMatchHistory() {
-        _matchHistory.value = emptyList()
+        viewModelScope.launch {
+            matchRecordDao.clearAll()
+        }
         soundManager.playButtonClick()
     }
     private val _gameState = MutableStateFlow<GameState>(GameState.Menu)
