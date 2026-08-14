@@ -56,11 +56,12 @@ fun GameScreen(
     val totalScoreSteps = uiState.winningScore
     val trackWidthDp = (totalScoreSteps * 40 + 220).dp
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF14141E))
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF14141E))
+        ) {
         // Top Bar Header
         TopAppBar(
             title = {
@@ -365,6 +366,12 @@ fun GameScreen(
             }
         }
     }
+
+    ConfettiCelebrationEffect(
+        trigger = if (uiState.countWinners > 0) uiState.countWinners else null,
+        modifier = Modifier.fillMaxSize()
+    )
+}
 }
 
 @Composable
@@ -623,6 +630,18 @@ private fun PlayerRowTrack(
                         fontSize = 12.sp
                     )
                 }
+            }
+
+            // Confetti celebration when mouse reaches finish line or completes correct prediction streak
+            val isAtFinishLine = player.score >= winningScore || player.winnerRank != null
+            val isCorrectPrediction = player.winnerRank != null && player.predictedRank != null && player.winnerRank == player.predictedRank
+
+            if (isAtFinishLine) {
+                TrackFinishLineConfetti(
+                    isFinished = true,
+                    isPredictionCorrect = isCorrectPrediction,
+                    modifier = Modifier.matchParentSize()
+                )
             }
         }
     }
