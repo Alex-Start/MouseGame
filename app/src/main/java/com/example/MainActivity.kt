@@ -65,6 +65,8 @@ fun MouseGameApp(viewModel: GameViewModel = viewModel()) {
         is GameState.Playing -> {
             GameScreen(
                 uiState = state.uiState,
+                onStartRace = viewModel::startRace,
+                onRenamePlayer = viewModel::renamePlayer,
                 onRecordMatch = viewModel::addMatchRecord,
                 onReturnToMenu = viewModel::returnToMenu,
                 onRestartGame = viewModel::restartGame,

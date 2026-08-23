@@ -638,8 +638,10 @@ fun MenuScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
+                                    val mouseName = settings.getPlayerName(playerId)
+                                    val label = if (settings.customNames.containsKey(playerId)) mouseName else "P$playerId"
                                     Text(
-                                        text = "P$playerId",
+                                        text = label,
                                         color = textColor,
                                         fontWeight = if (isGuessed) FontWeight.Bold else FontWeight.Medium,
                                         fontSize = 12.sp

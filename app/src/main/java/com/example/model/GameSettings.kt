@@ -46,6 +46,11 @@ data class GameSettings(
     val sneakyCat: Boolean = false,
     val dualCat: Boolean = false,
     val betAmount: Int = 50,
-    val betType: BetType = BetType.EXACT_ORDER
-)
+    val betType: BetType = BetType.EXACT_ORDER,
+    val customNames: Map<Int, String> = emptyMap()
+) {
+    fun getPlayerName(playerId: Int): String {
+        return customNames[playerId]?.trim()?.ifEmpty { null } ?: "Player $playerId"
+    }
+}
 

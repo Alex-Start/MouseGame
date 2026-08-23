@@ -47,6 +47,7 @@ data class GameUiState(
     val laserLineNumber2: Int = 0,
     val laserLineTime2: Int = 0,
     val laserLineTimeMax2: Int = 10,
+    val isGameStarted: Boolean = false,
     val isGameOver: Boolean = false,
     val durationFormatted: String = "00:00:00",
     val winMode: WinMode = WinMode.WIN_1,
@@ -66,7 +67,7 @@ data class GameUiState(
     val tick: Long = 0L
 )
 
-fun GameEngine.toUiState(isMuted: Boolean = false): GameUiState {
+fun GameEngine.toUiState(isMuted: Boolean = false, isGameStarted: Boolean = false): GameUiState {
     val winnerList = winners.toMap()
 
     // Calculate complete rank map for ALL players who finished or are alive
@@ -118,6 +119,7 @@ fun GameEngine.toUiState(isMuted: Boolean = false): GameUiState {
         laserLineNumber2 = laserLineNumber2,
         laserLineTime2 = laserLineTime2,
         laserLineTimeMax2 = getEffectiveLaserTimeMax2(),
+        isGameStarted = isGameStarted,
         isGameOver = isGameOver,
         durationFormatted = formatDuration(),
         winMode = settings.winMode,
@@ -268,6 +270,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         soundManager.playSettingToggle()
     }
 
+    private var currentEngine: GameEngine? = null
+
     fun setWinMode(winMode: WinMode) {
         val current = _settings.value
         _settings.value = current.copy(winMode = winMode)
@@ -275,14 +279,42 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun startGame(mode: WinMode) {
+        gameLoopJob?.cancel()
+        gameLoopJob = null
         val currentSettings = _settings.value.copy(winMode = mode)
         _settings.value = currentSettings
         val engine = GameEngine(currentSettings)
-        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+        currentEngine = engine
+        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted, isGameStarted = false))
         isPaused = false
+        soundManager.playButtonClick()
+    }
 
+    fun startRace() {
+        val engine = currentEngine ?: return
+        if (gameLoopJob?.isActive == true) return
         soundManager.playStartGame()
+        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted, isGameStarted = true))
         startLoop(engine)
+    }
+
+    fun renamePlayer(playerId: Int, newName: String) {
+        val trimmed = newName.trim().ifEmpty { "Player $playerId" }
+        val updatedCustomNames = _settings.value.customNames.toMutableMap()
+        updatedCustomNames[playerId] = trimmed
+        _settings.value = _settings.value.copy(customNames = updatedCustomNames)
+
+        currentEngine?.renamePlayer(playerId, trimmed)
+        val current = _gameState.value
+        if (current is GameState.Playing) {
+            _gameState.value = GameState.Playing(
+                current.uiState.copy(
+                    players = current.uiState.players.map { p ->
+                        if (p.id == playerId) p.copy(name = trimmed) else p
+                    }
+                )
+            )
+        }
     }
 
     fun returnToMenu() {
@@ -298,13 +330,13 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun restartGame() {
         gameLoopJob?.cancel()
+        gameLoopJob = null
         val currentSettings = _settings.value
         val engine = GameEngine(currentSettings)
-        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+        currentEngine = engine
+        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted, isGameStarted = false))
         isPaused = false
-
-        soundManager.playStartGame()
-        startLoop(engine)
+        soundManager.playButtonClick()
     }
 
     private fun startLoop(engine: GameEngine) {
@@ -350,7 +382,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                             prevWinnersCount = newWinners
                         }
 
-                        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+                        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted, isGameStarted = true))
                         delay(400)
 
                         val playersBeforeLaser = engine.players.toList()
@@ -378,7 +410,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                             soundManager.playLaserStrike()
                         }
 
-                        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+                        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted, isGameStarted = true))
                         delay(400)
                     } else {
                         engine.playRound()
@@ -402,7 +434,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                             prevWinnersCount = newWinners
                         }
 
-                        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+                        _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted, isGameStarted = true))
                         delay(600)
                     }
                 } else {
@@ -410,7 +442,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
             // Final emit
-            _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted))
+            _gameState.value = GameState.Playing(engine.toUiState(soundManager.isMuted, isGameStarted = true))
         }
     }
 

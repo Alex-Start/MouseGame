@@ -2,9 +2,11 @@ package com.example.ui
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -34,10 +36,12 @@ import androidx.compose.ui.unit.sp
 import com.example.model.LaserMode
 import com.example.R
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun GameScreen(
     uiState: GameUiState,
+    onStartRace: () -> Unit = {},
+    onRenamePlayer: (Int, String) -> Unit = { _, _ -> },
     onRecordMatch: (com.example.model.MatchRecord) -> Unit = {},
     onReturnToMenu: () -> Unit,
     onRestartGame: () -> Unit,
@@ -46,11 +50,25 @@ fun GameScreen(
     val horizontalScrollState = rememberScrollState()
     val verticalScrollState = rememberScrollState()
     var hasRecordedHistory by remember { mutableStateOf(false) }
+    var renamingPlayer by remember { mutableStateOf<PlayerUiState?>(null) }
 
     LaunchedEffect(uiState.isGameOver) {
         if (!uiState.isGameOver) {
             hasRecordedHistory = false
         }
+    }
+
+    if (renamingPlayer != null) {
+        RenamePlayerDialog(
+            player = renamingPlayer!!,
+            onConfirm = { newName ->
+                onRenamePlayer(renamingPlayer!!.id, newName)
+                renamingPlayer = null
+            },
+            onDismiss = {
+                renamingPlayer = null
+            }
+        )
     }
 
     val totalScoreSteps = uiState.winningScore
@@ -102,15 +120,68 @@ fun GameScreen(
                         tint = if (uiState.isMuted) Color.Red else Color.Green
                     )
                 }
-                IconButton(
-                    onClick = onRestartGame,
-                    modifier = Modifier.testTag("restart_button")
-                ) {
-                    Icon(Icons.Default.Refresh, contentDescription = "Restart Game", tint = Color.White)
+                if (!uiState.isGameStarted) {
+                    IconButton(
+                        onClick = onStartRace,
+                        modifier = Modifier.testTag("top_start_button")
+                    ) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = "Start Game", tint = Color(0xFF00E676))
+                    }
+                } else {
+                    IconButton(
+                        onClick = onRestartGame,
+                        modifier = Modifier.testTag("restart_button")
+                    ) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Restart Game", tint = Color.White)
+                    }
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1E1E2C))
         )
+
+        // Pre-Game Staging Instruction Banner
+        if (!uiState.isGameStarted) {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = Color(0xFF1C2738),
+                border = BorderStroke(1.dp, Color(0xFF4FC3F7).copy(alpha = 0.5f)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text("✏️", fontSize = 18.sp)
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Pre-Race Staging",
+                            color = Color(0xFF4FC3F7),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp
+                        )
+                        Text(
+                            text = "Tap any mouse name below to customize, then press START!",
+                            color = Color(0xFFCFD8DC),
+                            fontSize = 11.sp
+                        )
+                    }
+                    Button(
+                        onClick = onStartRace,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00E676)),
+                        shape = RoundedCornerShape(8.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                        modifier = Modifier.testTag("stage_start_button")
+                    ) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.Black, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("START", color = Color.Black, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp)
+                    }
+                }
+            }
+        }
 
         // Status Header Bar (Timer, Winners, Kills)
         Row(
@@ -318,12 +389,14 @@ fun GameScreen(
                 uiState.players.forEach { player ->
                     PlayerRowTrack(
                         player = player,
-                        winningScore = uiState.winningScore
+                        winningScore = uiState.winningScore,
+                        isGameStarted = uiState.isGameStarted,
+                        onRenameClick = { renamingPlayer = it }
                     )
                 }
 
-                // Laser / Cat Indicator Row
-                if (uiState.laserMode != LaserMode.OFF) {
+                // Laser / Cat Indicator Row (Only visible when game is started)
+                if (uiState.laserMode != LaserMode.OFF && uiState.isGameStarted) {
                     Spacer(modifier = Modifier.height(12.dp))
                     LaserCatRowTrack(
                         uiState = uiState
@@ -354,14 +427,26 @@ fun GameScreen(
                     Text("Game Menu")
                 }
 
-                Button(
-                    onClick = onRestartGame,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF7043)),
-                    modifier = Modifier.testTag("play_again_button")
-                ) {
-                    Icon(Icons.Default.Replay, contentDescription = null)
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(if (uiState.isGameOver) "Play Again" else "Restart")
+                if (!uiState.isGameStarted) {
+                    Button(
+                        onClick = onStartRace,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00E676)),
+                        modifier = Modifier.testTag("start_race_button")
+                    ) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.Black)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("Start Race", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                    }
+                } else {
+                    Button(
+                        onClick = onRestartGame,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF7043)),
+                        modifier = Modifier.testTag("play_again_button")
+                    ) {
+                        Icon(Icons.Default.Replay, contentDescription = null)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(if (uiState.isGameOver) "Play Again" else "Restart")
+                    }
                 }
             }
         }
@@ -377,7 +462,9 @@ fun GameScreen(
 @Composable
 private fun PlayerRowTrack(
     player: PlayerUiState,
-    winningScore: Int
+    winningScore: Int,
+    isGameStarted: Boolean,
+    onRenameClick: (PlayerUiState) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -411,50 +498,81 @@ private fun PlayerRowTrack(
             }
 
             Column {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "${player.name.trim()}: ${player.score}",
-                        color = if (player.isAlive && !player.isCaged) Color.White else Color.Gray,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        textDecoration = if (!player.isAlive || player.isCaged) TextDecoration.LineThrough else TextDecoration.None
-                    )
-                    if (player.hasKey) {
+                if (!isGameStarted) {
+                    // Pre-game editable name button
+                    Surface(
+                        onClick = { onRenameClick(player) },
+                        shape = RoundedCornerShape(6.dp),
+                        color = Color(0xFF2B2B3E),
+                        border = BorderStroke(1.dp, Color(0xFF4FC3F7).copy(alpha = 0.5f)),
+                        modifier = Modifier.testTag("rename_player_${player.id}")
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = player.name.trim(),
+                                color = Color(0xFFFFD700),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp,
+                                maxLines = 1
+                            )
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = "Rename",
+                                tint = Color(0xFF81D4FA),
+                                modifier = Modifier.size(11.dp)
+                            )
+                        }
+                    }
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         Text(
-                            text = "🔑",
-                            fontSize = 12.sp
+                            text = "${player.name.trim()}: ${player.score}",
+                            color = if (player.isAlive && !player.isCaged) Color.White else Color.Gray,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp,
+                            textDecoration = if (!player.isAlive || player.isCaged) TextDecoration.LineThrough else TextDecoration.None
+                        )
+                        if (player.hasKey) {
+                            Text(
+                                text = "🔑",
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+
+                    if (player.isCaged) {
+                        Text(
+                            text = "🔒 Caged",
+                            color = Color(0xFFFFB74D),
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    } else if (player.stunnedTurns > 0) {
+                        Text(
+                            text = "💫 Stunned",
+                            color = Color(0xFFFF7043),
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    } else if (player.predictedRank != null) {
+                        val isCorrect = player.winnerRank != null && player.winnerRank == player.predictedRank
+                        val tagText = if (isCorrect) "🎯 #${player.predictedRank} ✅" else "🎯 Pred #${player.predictedRank}"
+                        val tagColor = if (isCorrect) Color(0xFF81C784) else Color(0xFFFFB74D)
+
+                        Text(
+                            text = tagText,
+                            color = tagColor,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
                         )
                     }
-                }
-
-                if (player.isCaged) {
-                    Text(
-                        text = "🔒 Caged",
-                        color = Color(0xFFFFB74D),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                } else if (player.stunnedTurns > 0) {
-                    Text(
-                        text = "💫 Stunned",
-                        color = Color(0xFFFF7043),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                } else if (player.predictedRank != null) {
-                    val isCorrect = player.winnerRank != null && player.winnerRank == player.predictedRank
-                    val tagText = if (isCorrect) "🎯 #${player.predictedRank} ✅" else "🎯 Pred #${player.predictedRank}"
-                    val tagColor = if (isCorrect) Color(0xFF81C784) else Color(0xFFFFB74D)
-
-                    Text(
-                        text = tagText,
-                        color = tagColor,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold
-                    )
                 }
             }
         }
@@ -486,8 +604,8 @@ private fun PlayerRowTrack(
                 )
             }
 
-            // Key on Track (if not collected yet)
-            if (player.keyPosition != null && !player.isKeyCollected) {
+            // Key on Track (Only visible when game is started and not collected yet)
+            if (isGameStarted && player.keyPosition != null && !player.isKeyCollected) {
                 val keyFraction = (player.keyPosition.toFloat() / winningScore.toFloat()).coerceIn(0f, 1f)
                 val keyOffset = (maxWidth - 36.dp) * keyFraction
                 Box(
@@ -503,8 +621,8 @@ private fun PlayerRowTrack(
                 }
             }
 
-            // Cheese on Track (if not collected yet)
-            if (player.cheesePosition != null && !player.isCheeseCollected) {
+            // Cheese on Track (Only visible when game is started and not collected yet)
+            if (isGameStarted && player.cheesePosition != null && !player.isCheeseCollected) {
                 val cheeseFraction = (player.cheesePosition.toFloat() / winningScore.toFloat()).coerceIn(0f, 1f)
                 val cheeseOffset = (maxWidth - 36.dp) * cheeseFraction
                 Box(
@@ -520,8 +638,8 @@ private fun PlayerRowTrack(
                 }
             }
 
-            // Trap on Track (if not triggered yet)
-            if (player.trapPosition != null && !player.isTrapTriggered) {
+            // Trap on Track (Only visible when game is started and not triggered yet)
+            if (isGameStarted && player.trapPosition != null && !player.isTrapTriggered) {
                 val trapFraction = (player.trapPosition.toFloat() / winningScore.toFloat()).coerceIn(0f, 1f)
                 val trapOffset = (maxWidth - 36.dp) * trapFraction
                 Box(
@@ -803,5 +921,110 @@ private fun LaserCatRowTrack(
             }
         }
     }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun RenamePlayerDialog(
+    player: PlayerUiState,
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var nameText by remember { mutableStateOf(player.name.trim()) }
+    val presets = listOf("Speedy", "Jerry", "Mighty", "Bolt", "Pip", "Flash", "Turbo", "Squeak", "Nugget", "Cheesy")
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text("🐭", fontSize = 22.sp)
+                Text(
+                    text = "Rename Mouse #${player.id}",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            }
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                OutlinedTextField(
+                    value = nameText,
+                    onValueChange = { if (it.length <= 16) nameText = it },
+                    label = { Text("Mouse Name") },
+                    placeholder = { Text("e.g. Speedy, Jerry, Alice") },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFFFD700),
+                        unfocusedBorderColor = Color(0xFF4A4A62),
+                        focusedLabelColor = Color(0xFFFFD700),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("mouse_name_input")
+                )
+
+                Text(
+                    text = "Quick Presets:",
+                    color = Color(0xFFB0BEC5),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                // Preset Chips
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    presets.forEach { preset ->
+                        Surface(
+                            onClick = { nameText = preset },
+                            shape = RoundedCornerShape(8.dp),
+                            color = if (nameText.equals(preset, ignoreCase = true)) Color(0xFFFFD700) else Color(0xFF2A2A3C),
+                            border = BorderStroke(1.dp, if (nameText.equals(preset, ignoreCase = true)) Color(0xFFFFD700) else Color(0xFF424258))
+                        ) {
+                            Text(
+                                text = preset,
+                                color = if (nameText.equals(preset, ignoreCase = true)) Color.Black else Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(nameText.trim().ifEmpty { "Player ${player.id}" })
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00E676)),
+                modifier = Modifier.testTag("confirm_rename_button")
+            ) {
+                Text("Save Name", color = Color.Black, fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.textButtonColors(contentColor = Color.LightGray)
+            ) {
+                Text("Cancel")
+            }
+        },
+        containerColor = Color(0xFF1E1E2C),
+        shape = RoundedCornerShape(16.dp)
+    )
 }
 

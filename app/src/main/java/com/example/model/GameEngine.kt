@@ -20,13 +20,20 @@ class GameEngine(val settings: GameSettings) {
 
         Player(
             id = i + 1,
-            name = "Player ${i + 1}",
+            name = settings.getPlayerName(i + 1),
             keyPosition = keyPos,
             cheesePosition = cheesePos,
             trapPosition = trapPos
         )
     }
         private set
+
+    fun renamePlayer(playerId: Int, newName: String) {
+        val trimmed = newName.trim().ifEmpty { "Player $playerId" }
+        players = players.map { p ->
+            if (p.id == playerId) p.copy(name = trimmed) else p
+        }
+    }
 
     val winners = mutableMapOf<Int, Int>()
     private var lastPlace = 0
