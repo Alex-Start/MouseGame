@@ -1,8 +1,17 @@
 package com.example.ui
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,13 +29,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +66,12 @@ fun GameScreen(
     val verticalScrollState = rememberScrollState()
     var hasRecordedHistory by remember { mutableStateOf(false) }
     var renamingPlayer by remember { mutableStateOf<PlayerUiState?>(null) }
+    var parentLayoutCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
+    var firstRowTopPx by remember { mutableFloatStateOf(0f) }
+    var cat1CenterXPx by remember { mutableFloatStateOf(0f) }
+    var cat1TopYPx by remember { mutableFloatStateOf(0f) }
+    var cat2CenterXPx by remember { mutableFloatStateOf(0f) }
+    var cat2TopYPx by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(uiState.isGameOver) {
         if (!uiState.isGameOver) {
@@ -377,29 +398,70 @@ fun GameScreen(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
+                .background(Color(0xFF161622))
                 .horizontalScroll(horizontalScrollState)
                 .verticalScroll(verticalScrollState)
                 .padding(16.dp)
         ) {
-            Column(
-                modifier = Modifier.width(trackWidthDp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+            Box(
+                modifier = Modifier
+                    .width(trackWidthDp)
+                    .onGloballyPositioned { parentLayoutCoordinates = it }
             ) {
-                // Players List Track
-                uiState.players.forEach { player ->
-                    PlayerRowTrack(
-                        player = player,
-                        winningScore = uiState.winningScore,
-                        isGameStarted = uiState.isGameStarted,
-                        onRenameClick = { renamingPlayer = it }
-                    )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Players List Track
+                    uiState.players.forEachIndexed { index, player ->
+                        PlayerRowTrack(
+                            player = player,
+                            winningScore = uiState.winningScore,
+                            isGameStarted = uiState.isGameStarted,
+                            onRenameClick = { renamingPlayer = it },
+                            modifier = if (index == 0) {
+                                Modifier.onGloballyPositioned { coords ->
+                                    parentLayoutCoordinates?.let { parent ->
+                                        firstRowTopPx = parent.localPositionOf(coords, Offset.Zero).y
+                                    }
+                                }
+                            } else Modifier
+                        )
+                    }
+
+                    // Laser / Cat Indicator Row (Only visible when game is started)
+                    if (uiState.laserMode != LaserMode.OFF && uiState.isGameStarted) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        LaserCatRowTrack(
+                            uiState = uiState,
+                            onCat1Positioned = { coords ->
+                                parentLayoutCoordinates?.let { parent ->
+                                    val localPos = parent.localPositionOf(coords, Offset(coords.size.width / 2f, 0f))
+                                    cat1CenterXPx = localPos.x
+                                    cat1TopYPx = localPos.y
+                                }
+                            },
+                            onCat2Positioned = { coords ->
+                                parentLayoutCoordinates?.let { parent ->
+                                    val localPos = parent.localPositionOf(coords, Offset(coords.size.width / 2f, 0f))
+                                    cat2CenterXPx = localPos.x
+                                    cat2TopYPx = localPos.y
+                                }
+                            }
+                        )
+                    }
                 }
 
-                // Laser / Cat Indicator Row (Only visible when game is started)
+                // Laser Beam Flash Overlay covering all mouse rows from down to up
                 if (uiState.laserMode != LaserMode.OFF && uiState.isGameStarted) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    LaserCatRowTrack(
-                        uiState = uiState
+                    LaserBeamOverlay(
+                        uiState = uiState,
+                        firstRowTopPx = firstRowTopPx,
+                        cat1CenterXPx = cat1CenterXPx,
+                        cat1TopYPx = cat1TopYPx,
+                        cat2CenterXPx = cat2CenterXPx,
+                        cat2TopYPx = cat2TopYPx,
+                        modifier = Modifier.matchParentSize()
                     )
                 }
             }
@@ -464,10 +526,11 @@ private fun PlayerRowTrack(
     player: PlayerUiState,
     winningScore: Int,
     isGameStarted: Boolean,
-    onRenameClick: (PlayerUiState) -> Unit
+    onRenameClick: (PlayerUiState) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0xFF1E1E2A))
@@ -767,7 +830,9 @@ private fun PlayerRowTrack(
 
 @Composable
 private fun LaserCatRowTrack(
-    uiState: GameUiState
+    uiState: GameUiState,
+    onCat1Positioned: (LayoutCoordinates) -> Unit = {},
+    onCat2Positioned: (LayoutCoordinates) -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -812,7 +877,7 @@ private fun LaserCatRowTrack(
 
             // Cat 1 Indicator
             if (uiState.laserLineNumber > 0) {
-                val totalTrackWidth = maxWidth - 40.dp
+                val totalTrackWidth = maxWidth - 36.dp
                 val positionFraction = (uiState.laserLineNumber.toFloat() / uiState.winningScore.toFloat()).coerceIn(0f, 1f)
                 val targetCatOffset = totalTrackWidth * positionFraction
                 val animatedCatOffset by animateDpAsState(
@@ -822,7 +887,9 @@ private fun LaserCatRowTrack(
                 )
 
                 Box(
-                    modifier = Modifier.offset(x = animatedCatOffset)
+                    modifier = Modifier
+                        .offset(x = animatedCatOffset)
+                        .onGloballyPositioned { coords -> onCat1Positioned(coords) }
                 ) {
                     if (uiState.laserLineTime < uiState.laserLineTimeMax) {
                         // Countdown state
@@ -830,35 +897,42 @@ private fun LaserCatRowTrack(
                         val displayText = if (uiState.sneakyCat) "❓" else "${uiState.laserLineTime}"
                         Box(
                             modifier = Modifier
-                                .size(28.dp)
+                                .size(36.dp)
                                 .clip(CircleShape)
-                                .background(if (isWarning) Color(0xFFE53935) else Color(0xFF424242)),
+                                .background(if (isWarning) Color(0xFFE53935) else Color(0xFF424242))
+                                .border(
+                                    if (isWarning) 2.dp else 1.dp,
+                                    if (isWarning) Color(0xFFFFD54F) else Color(0xFF757575),
+                                    CircleShape
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = displayText,
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 13.sp
                             )
                         }
                     } else {
-                        // Attack state (Cat Image + Red Laser Line)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
+                        // Attack state (Cat with red emitter aura at base of upward laser)
+                        Box(
+                            modifier = Modifier.size(36.dp),
+                            contentAlignment = Alignment.Center
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .width(4.dp)
-                                    .height(36.dp)
-                                    .background(Color.Red)
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFFF1744).copy(alpha = 0.4f))
                             )
                             Image(
                                 painter = painterResource(id = R.drawable.ic_cat),
                                 contentDescription = "Laser Cat 1",
                                 modifier = Modifier
-                                    .size(36.dp)
+                                    .size(32.dp)
                                     .clip(CircleShape)
+                                    .border(2.dp, Color(0xFFFF1744), CircleShape)
                             )
                         }
                     }
@@ -867,7 +941,7 @@ private fun LaserCatRowTrack(
 
             // Cat 2 Indicator (Dual Cat)
             if (uiState.dualCat && uiState.laserLineNumber2 > 0) {
-                val totalTrackWidth = maxWidth - 40.dp
+                val totalTrackWidth = maxWidth - 36.dp
                 val positionFraction2 = (uiState.laserLineNumber2.toFloat() / uiState.winningScore.toFloat()).coerceIn(0f, 1f)
                 val targetCatOffset2 = totalTrackWidth * positionFraction2
                 val animatedCatOffset2 by animateDpAsState(
@@ -877,7 +951,9 @@ private fun LaserCatRowTrack(
                 )
 
                 Box(
-                    modifier = Modifier.offset(x = animatedCatOffset2)
+                    modifier = Modifier
+                        .offset(x = animatedCatOffset2)
+                        .onGloballyPositioned { coords -> onCat2Positioned(coords) }
                 ) {
                     if (uiState.laserLineTime2 < uiState.laserLineTimeMax2) {
                         // Countdown state for Cat 2
@@ -885,39 +961,346 @@ private fun LaserCatRowTrack(
                         val displayText2 = if (uiState.sneakyCat) "❓" else "${uiState.laserLineTime2}"
                         Box(
                             modifier = Modifier
-                                .size(28.dp)
+                                .size(36.dp)
                                 .clip(CircleShape)
-                                .background(if (isWarning2) Color(0xFFFF9800) else Color(0xFF2E7D32)),
+                                .background(if (isWarning2) Color(0xFFFF9800) else Color(0xFF2E7D32))
+                                .border(
+                                    if (isWarning2) 2.dp else 1.dp,
+                                    if (isWarning2) Color(0xFFFFD54F) else Color(0xFF81C784),
+                                    CircleShape
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = displayText2,
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 13.sp
                             )
                         }
                     } else {
-                        // Attack state for Cat 2 (Cyan Laser + Cat Image)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
+                        // Attack state for Cat 2 (Cyan/Emerald aura at base of upward laser)
+                        Box(
+                            modifier = Modifier.size(36.dp),
+                            contentAlignment = Alignment.Center
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .width(4.dp)
-                                    .height(36.dp)
-                                    .background(Color(0xFF00E676))
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFF00E676).copy(alpha = 0.4f))
                             )
                             Image(
                                 painter = painterResource(id = R.drawable.ic_cat),
                                 contentDescription = "Laser Cat 2",
                                 modifier = Modifier
-                                    .size(36.dp)
+                                    .size(32.dp)
                                     .clip(CircleShape)
+                                    .border(2.dp, Color(0xFF00E676), CircleShape)
                             )
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LaserBeamOverlay(
+    uiState: GameUiState,
+    firstRowTopPx: Float,
+    cat1CenterXPx: Float,
+    cat1TopYPx: Float,
+    cat2CenterXPx: Float,
+    cat2TopYPx: Float,
+    modifier: Modifier = Modifier
+) {
+    val isCat1Striking = uiState.laserLineNumber > 0 && uiState.laserLineTime >= uiState.laserLineTimeMax
+    val isCat1Warning = uiState.laserLineNumber > 0 && uiState.laserLineTime == uiState.laserLineTimeMax - 1
+
+    val isCat2Striking = uiState.dualCat && uiState.laserLineNumber2 > 0 && uiState.laserLineTime2 >= uiState.laserLineTimeMax2
+    val isCat2Warning = uiState.dualCat && uiState.laserLineNumber2 > 0 && uiState.laserLineTime2 == uiState.laserLineTimeMax2 - 1
+
+    // Upward flash animation for Cat 1 (from cat at bottom up to first mouse row)
+    val shootProgress1 = remember { Animatable(0f) }
+    LaunchedEffect(uiState.laserLineNumber, isCat1Striking) {
+        if (isCat1Striking) {
+            shootProgress1.snapTo(0f)
+            shootProgress1.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 180, easing = LinearOutSlowInEasing)
+            )
+        } else {
+            shootProgress1.snapTo(0f)
+        }
+    }
+
+    // Upward flash animation for Cat 2
+    val shootProgress2 = remember { Animatable(0f) }
+    LaunchedEffect(uiState.laserLineNumber2, isCat2Striking) {
+        if (isCat2Striking) {
+            shootProgress2.snapTo(0f)
+            shootProgress2.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 180, easing = LinearOutSlowInEasing)
+            )
+        } else {
+            shootProgress2.snapTo(0f)
+        }
+    }
+
+    // Continuous energetic flicker & width pulse during laser fire
+    val infiniteTransition = rememberInfiniteTransition(label = "laser_flicker")
+    val flickerAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.75f,
+        targetValue = 1.0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 80, easing = FastOutLinearInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "flickerAlpha"
+    )
+    val pulseWidth by infiniteTransition.animateFloat(
+        initialValue = 0.85f,
+        targetValue = 1.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 110, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulseWidth"
+    )
+
+    Canvas(modifier = modifier) {
+        val canvasWidth = size.width
+        val canvasHeight = size.height
+
+        val laneStartX = 142.dp.toPx()
+        val totalLaneWidth = (canvasWidth - 154.dp.toPx()).coerceAtLeast(100f)
+        val targetTopY = if (firstRowTopPx > 0f) (firstRowTopPx - 8.dp.toPx()).coerceAtLeast(0f) else 4.dp.toPx()
+
+        // --- CAT 1 LASER STRIKE (RED / NEON CRIMSON) ---
+        if (uiState.laserLineNumber > 0) {
+            val progress1 = (uiState.laserLineNumber.toFloat() / uiState.winningScore.toFloat()).coerceIn(0f, 1f)
+            val fallbackCat1X = laneStartX + (totalLaneWidth - 36.dp.toPx()) * progress1 + 18.dp.toPx()
+            val cat1X = if (cat1CenterXPx > 0f) cat1CenterXPx else fallbackCat1X
+            val cat1Y = if (cat1TopYPx > 0f) cat1TopYPx else (canvasHeight - 24.dp.toPx())
+
+            if (isCat1Striking && shootProgress1.value > 0f) {
+                // The laser flashes from down (cat1Y) to up (targetTopY above first mouse row)
+                val beamHeadY = cat1Y - (cat1Y - targetTopY) * shootProgress1.value
+
+                // 1. Ambient strike glow column across all mouse rows
+                val glowHalfWidth = 24.dp.toPx() * pulseWidth
+                drawRect(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color(0x33FF1744),
+                            Color(0x88FF1744),
+                            Color(0x33FF1744),
+                            Color.Transparent
+                        ),
+                        startX = cat1X - glowHalfWidth,
+                        endX = cat1X + glowHalfWidth
+                    ),
+                    topLeft = Offset(cat1X - glowHalfWidth, beamHeadY),
+                    size = androidx.compose.ui.geometry.Size(glowHalfWidth * 2f, (cat1Y - beamHeadY).coerceAtLeast(1f))
+                )
+
+                // 2. Outer energetic laser beam
+                drawLine(
+                    color = Color(0xFFFF1744).copy(alpha = 0.85f * flickerAlpha),
+                    start = Offset(cat1X, cat1Y),
+                    end = Offset(cat1X, beamHeadY),
+                    strokeWidth = 10.dp.toPx() * pulseWidth,
+                    cap = StrokeCap.Round
+                )
+
+                // 3. Inner neon laser core
+                drawLine(
+                    color = Color(0xFFFF5252).copy(alpha = flickerAlpha),
+                    start = Offset(cat1X, cat1Y),
+                    end = Offset(cat1X, beamHeadY),
+                    strokeWidth = 5.dp.toPx() * pulseWidth,
+                    cap = StrokeCap.Round
+                )
+
+                // 4. Brilliant white/yellow core line
+                drawLine(
+                    color = Color(0xFFFFFDE7).copy(alpha = flickerAlpha),
+                    start = Offset(cat1X, cat1Y),
+                    end = Offset(cat1X, beamHeadY),
+                    strokeWidth = 2.5.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+
+                // 5. Upward traveling Laser Head Flare (The flashing tip)
+                val headRadius = 13.dp.toPx() * pulseWidth
+                drawCircle(
+                    color = Color(0xFFFF1744).copy(alpha = 0.9f * flickerAlpha),
+                    radius = headRadius,
+                    center = Offset(cat1X, beamHeadY)
+                )
+                drawCircle(
+                    color = Color(0xFFFFD54F).copy(alpha = flickerAlpha),
+                    radius = headRadius * 0.55f,
+                    center = Offset(cat1X, beamHeadY)
+                )
+                drawCircle(
+                    color = Color.White,
+                    radius = headRadius * 0.28f,
+                    center = Offset(cat1X, beamHeadY)
+                )
+
+                // Cross sparkle rays at the beam head
+                drawLine(
+                    color = Color.White.copy(alpha = 0.9f * flickerAlpha),
+                    start = Offset(cat1X - 16.dp.toPx(), beamHeadY),
+                    end = Offset(cat1X + 16.dp.toPx(), beamHeadY),
+                    strokeWidth = 2.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+                drawLine(
+                    color = Color.White.copy(alpha = 0.9f * flickerAlpha),
+                    start = Offset(cat1X, beamHeadY - 14.dp.toPx()),
+                    end = Offset(cat1X, beamHeadY + 14.dp.toPx()),
+                    strokeWidth = 2.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+
+                // 6. Emitter corona burst at the cat (bottom origin)
+                drawCircle(
+                    color = Color(0xFFFF1744).copy(alpha = 0.8f * flickerAlpha),
+                    radius = 10.dp.toPx() * pulseWidth,
+                    center = Offset(cat1X, cat1Y)
+                )
+                drawCircle(
+                    color = Color(0xFFFFFDE7),
+                    radius = 4.dp.toPx(),
+                    center = Offset(cat1X, cat1Y)
+                )
+            } else if (isCat1Warning) {
+                // Subtle warning targeting guide line from cat up through all mouse rows
+                drawLine(
+                    color = Color(0xFFFF5252).copy(alpha = 0.4f * flickerAlpha),
+                    start = Offset(cat1X, cat1Y),
+                    end = Offset(cat1X, targetTopY),
+                    strokeWidth = 2.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+            }
+        }
+
+        // --- CAT 2 LASER STRIKE (DUAL CAT: CYAN / EMERALD) ---
+        if (uiState.dualCat && uiState.laserLineNumber2 > 0) {
+            val progress2 = (uiState.laserLineNumber2.toFloat() / uiState.winningScore.toFloat()).coerceIn(0f, 1f)
+            val fallbackCat2X = laneStartX + (totalLaneWidth - 36.dp.toPx()) * progress2 + 18.dp.toPx()
+            val cat2X = if (cat2CenterXPx > 0f) cat2CenterXPx else fallbackCat2X
+            val cat2Y = if (cat2TopYPx > 0f) cat2TopYPx else (canvasHeight - 24.dp.toPx())
+
+            if (isCat2Striking && shootProgress2.value > 0f) {
+                val beamHeadY2 = cat2Y - (cat2Y - targetTopY) * shootProgress2.value
+
+                // 1. Ambient strike glow column
+                val glowHalfWidth2 = 24.dp.toPx() * pulseWidth
+                drawRect(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color(0x3300E5FF),
+                            Color(0x8800E5FF),
+                            Color(0x3300E5FF),
+                            Color.Transparent
+                        ),
+                        startX = cat2X - glowHalfWidth2,
+                        endX = cat2X + glowHalfWidth2
+                    ),
+                    topLeft = Offset(cat2X - glowHalfWidth2, beamHeadY2),
+                    size = androidx.compose.ui.geometry.Size(glowHalfWidth2 * 2f, (cat2Y - beamHeadY2).coerceAtLeast(1f))
+                )
+
+                // 2. Outer energetic laser beam
+                drawLine(
+                    color = Color(0xFF00E676).copy(alpha = 0.85f * flickerAlpha),
+                    start = Offset(cat2X, cat2Y),
+                    end = Offset(cat2X, beamHeadY2),
+                    strokeWidth = 10.dp.toPx() * pulseWidth,
+                    cap = StrokeCap.Round
+                )
+
+                // 3. Inner neon laser core
+                drawLine(
+                    color = Color(0xFF00E5FF).copy(alpha = flickerAlpha),
+                    start = Offset(cat2X, cat2Y),
+                    end = Offset(cat2X, beamHeadY2),
+                    strokeWidth = 5.dp.toPx() * pulseWidth,
+                    cap = StrokeCap.Round
+                )
+
+                // 4. White core
+                drawLine(
+                    color = Color.White.copy(alpha = flickerAlpha),
+                    start = Offset(cat2X, cat2Y),
+                    end = Offset(cat2X, beamHeadY2),
+                    strokeWidth = 2.5.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+
+                // 5. Upward traveling Laser Head Flare
+                val headRadius2 = 13.dp.toPx() * pulseWidth
+                drawCircle(
+                    color = Color(0xFF00E5FF).copy(alpha = 0.9f * flickerAlpha),
+                    radius = headRadius2,
+                    center = Offset(cat2X, beamHeadY2)
+                )
+                drawCircle(
+                    color = Color(0xFFB9F6CA).copy(alpha = flickerAlpha),
+                    radius = headRadius2 * 0.55f,
+                    center = Offset(cat2X, beamHeadY2)
+                )
+                drawCircle(
+                    color = Color.White,
+                    radius = headRadius2 * 0.28f,
+                    center = Offset(cat2X, beamHeadY2)
+                )
+
+                // Cross sparkle rays at the beam head
+                drawLine(
+                    color = Color.White.copy(alpha = 0.9f * flickerAlpha),
+                    start = Offset(cat2X - 16.dp.toPx(), beamHeadY2),
+                    end = Offset(cat2X + 16.dp.toPx(), beamHeadY2),
+                    strokeWidth = 2.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+                drawLine(
+                    color = Color.White.copy(alpha = 0.9f * flickerAlpha),
+                    start = Offset(cat2X, beamHeadY2 - 14.dp.toPx()),
+                    end = Offset(cat2X, beamHeadY2 + 14.dp.toPx()),
+                    strokeWidth = 2.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+
+                // 6. Emitter corona burst at Cat 2
+                drawCircle(
+                    color = Color(0xFF00E5FF).copy(alpha = 0.8f * flickerAlpha),
+                    radius = 10.dp.toPx() * pulseWidth,
+                    center = Offset(cat2X, cat2Y)
+                )
+                drawCircle(
+                    color = Color.White,
+                    radius = 4.dp.toPx(),
+                    center = Offset(cat2X, cat2Y)
+                )
+            } else if (isCat2Warning) {
+                // Subtle warning sight line
+                drawLine(
+                    color = Color(0xFF00E676).copy(alpha = 0.4f * flickerAlpha),
+                    start = Offset(cat2X, cat2Y),
+                    end = Offset(cat2X, targetTopY),
+                    strokeWidth = 2.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
             }
         }
     }

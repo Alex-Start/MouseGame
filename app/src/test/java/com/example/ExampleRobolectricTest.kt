@@ -42,6 +42,29 @@ class ExampleRobolectricTest {
     assertEquals("Mighty", engine.players[2].name)
   }
 
+  @Test
+  fun `test cat laser advance and strike`() {
+    val settings = GameSettings(
+      laserMode = com.example.model.LaserMode.KILL,
+      winningScore = 10,
+      fastCat = false
+    )
+    val engine = GameEngine(settings)
+    val maxTime = engine.getEffectiveLaserTimeMax()
 
+    // Advance laser through one full cycle so laserLineNumber becomes 1
+    for (i in 0..maxTime) {
+      engine.advanceLaserTime()
+    }
+    assertEquals(1, engine.laserLineNumber)
+
+    // Advance to strike time of the new cycle
+    for (i in 1..maxTime) {
+      engine.advanceLaserTime()
+    }
+    assertEquals(maxTime, engine.laserLineTime)
+    val isStrike = engine.laserLineTime == engine.getEffectiveLaserTimeMax() && engine.laserLineNumber > 0
+    assertTrue(isStrike)
+  }
 }
 
